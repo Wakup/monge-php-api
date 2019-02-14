@@ -2,8 +2,12 @@
 
 namespace HelloWorld;
 
+use SebastianBergmann\Timer\Timer;
+
 class Greetings {
     public static function sayHelloWorld() {
-        return 'Hello World';
+        Timer::start();
+        $time = Timer::stop();
+        return "Hello World\n" . Timer::secondsToTimeString($time) . "\n";
     }
 }
