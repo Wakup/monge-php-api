@@ -1,0 +1,20 @@
+{
+    "name": "monge/php-api",
+    "description": "PHP interface for Monge web services",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alex Gutiérrez",
+            "email": "alejandro.gutierrez@twincoders.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "HelloWorld\\": "src/"
+        }
+    }
+}
