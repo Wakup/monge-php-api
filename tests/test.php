@@ -3,6 +3,7 @@
 // Autoload files using the Composer autoloader.
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use HelloWorld\Greetings;
+echo \Wakup\Greetings::sayHelloWorld();
 
-echo Greetings::sayHelloWorld();
+$wakupClient = new \Wakup\Client();
+$wakupClient->getAttributes();
