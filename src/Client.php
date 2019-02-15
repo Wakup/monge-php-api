@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\GuzzleException;
 class Client
 {
 
-    public function getAttributes(int $page = 0, int $perPage = 25) : PaginatedAttributes
+    public function getPaginatedAttributes(int $page = 0, int $perPage = 25) : PaginatedAttributes
     {
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'http://ecommerce.wakup.net:9000/catalog/attributes');
