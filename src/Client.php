@@ -14,13 +14,16 @@ use GuzzleHttp\Exception\GuzzleException;
 class Client
 {
 
-    public function getAttributes(int $page = 0, int $perPage = 25)
+    public function getAttributes(int $page = 0, int $perPage = 25) : PaginatedAttributes
     {
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'http://ecommerce.wakup.net:9000/catalog/attributes');
         $body = $response->getBody();
         $obj = json_decode($body);
-        var_dump($obj);
+        $mapper = new \JsonMapper();
+        $response = new PaginatedAttributes();
+        $mapper->map($obj, $response);
+        return $response;
     }
 
 }

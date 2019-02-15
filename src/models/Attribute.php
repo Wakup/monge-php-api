@@ -85,5 +85,76 @@ class Attribute
         return $this->order;
     }
 
+    /**
+     * @param string $identifier
+     */
+    public function setIdentifier(string $identifier): void
+    {
+        $this->identifier = $identifier;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @param string[] $values
+     */
+    public function setValues(array $values): void
+    {
+        $this->values = $values;
+    }
+
+    /**
+     * @param bool $visible
+     */
+    public function setVisible(bool $visible): void
+    {
+        $this->visible = $visible;
+    }
+
+    /**
+     * @param bool $filterable
+     */
+    public function setFilterable(bool $filterable): void
+    {
+        $this->filterable = $filterable;
+    }
+
+    /**
+     * @param bool $translatable
+     */
+    public function setTranslatable(bool $translatable): void
+    {
+        $this->translatable = $translatable;
+    }
+
+    /**
+     * @param bool $mandatory
+     */
+    public function setMandatory(bool $mandatory): void
+    {
+        $this->mandatory = $mandatory;
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder(int $order): void
+    {
+        $this->order = $order;
+    }
 
 }

@@ -21,4 +21,12 @@ class PaginatedAttributes extends PaginatedResults
         return $this->attributes;
     }
 
+    /**
+     * @param Attribute[] $attributes
+     */
+    public function setAttributes(array $attributes): void
+    {
+        $this->attributes = $attributes;
+    }
+
 }

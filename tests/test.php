@@ -6,4 +6,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 echo \Wakup\Greetings::sayHelloWorld();
 
 $wakupClient = new \Wakup\Client();
-$wakupClient->getAttributes();
+$attributes = $wakupClient->getAttributes()->getAttributes();
+$attribute = $attributes[0];
+echo $attribute->getName();
