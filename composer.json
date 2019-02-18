@@ -1,11 +1,11 @@
 {
-    "name": "monge/php-api",
+    "name": "wakup/monge-php-api",
     "description": "PHP interface for Monge web services",
     "type": "library",
     "authors": [
         {
             "name": "Alex Gutiérrez",
-            "email": "alejandro.gutierrez@twincoders.com"
+            "email": "alejandro.gutierrez@wakup.net"
         }
     ],
     "minimum-stability": "dev",
