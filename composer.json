@@ -1,6 +1,7 @@
 {
     "name": "wakup/monge-php-api",
     "description": "PHP interface for Monge web services",
+    "version": "0.0.1",
     "type": "library",
     "authors": [
         {
