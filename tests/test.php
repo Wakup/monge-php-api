@@ -4,6 +4,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $wakupClient = new \Wakup\Client();
-$attributes = $wakupClient->getPaginatedAttributes(0, 100)->getAttributes();
-$attribute = $attributes[0];
-echo $attribute->getName();
+$pagination = $wakupClient->getPaginatedAttributes(0, 2);
+$attributes = $pagination->getAttributes();
+var_dump($pagination);
