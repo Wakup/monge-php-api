@@ -23,7 +23,8 @@ class Client extends HttpClient
     public function getPaginatedAttributes($page = 0, $perPage = 25) : PaginatedAttributes
     {
         $responseObj = new PaginatedAttributes();
-        $this->launchGetRequest('catalog/attributes', ['page' => $page, 'perPage' => $perPage], $responseObj);
+        $params = ['page' => $page, 'perPage' => $perPage];
+        $this->launchGetRequest('catalog/attributes', $params, $this->getWakupHeaders(), $responseObj);
         return $responseObj;
     }
 
@@ -38,7 +39,27 @@ class Client extends HttpClient
     public function getPaginatedCategories($page = 0, $perPage = 25) : PaginatedCategories
     {
         $responseObj = new PaginatedCategories();
-        $this->launchGetRequest('catalog/categories', ['page' => $page, 'perPage' => $perPage], $responseObj);
+        $params = ['page' => $page, 'perPage' => $perPage];
+        $this->launchGetRequest('catalog/categories', $params, $this->getWakupHeaders(), $responseObj);
+        return $responseObj;
+    }
+
+    /**
+     * Obtains the list of products that has changed from the last update time. The returning products will only contain
+     * price or details info if it has changed since given date.
+     *
+     * @param \DateTime $lastUpdate Time of last update
+     * @param int $page Page to request. First page is 0
+     * @param int $perPage Number of results to obtain per request. Default is 25.
+     * @return PaginatedProducts List of paginated products that has changed since last update time
+     * @throws WakupException
+     */
+    public function getPaginatedProducts(\DateTime $lastUpdate, $page = 0, $perPage = 25) : PaginatedProducts
+    {
+        $responseObj = new PaginatedProducts();
+        $params = ['page' => $page, 'perPage' => $perPage];
+        if ($lastUpdate != null) $params['lastUpdate'] = $lastUpdate->format(\DateTime::ATOM);
+        $this->launchGetRequest('catalog/products', $params, $this->getWakupHeaders(), $responseObj);
         return $responseObj;
     }
 

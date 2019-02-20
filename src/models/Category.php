@@ -47,7 +47,7 @@ class Category
     }
 
     /**
-     * @return string Parent category identifier
+     * @return string|null Parent category identifier
      */
     public function getParentCategory() : string
     {
@@ -55,9 +55,9 @@ class Category
     }
 
     /**
-     * @param mixed $parentCategory
+     * @param string|null $parentCategory
      */
-    public function setParentCategory(string $parentCategory): void
+    public function setParentCategory($parentCategory): void
     {
         $this->parentCategory = $parentCategory;
     }
