@@ -54,7 +54,7 @@ class Client extends HttpClient
      * @return PaginatedProducts List of paginated products that has changed since last update time
      * @throws WakupException
      */
-    public function getPaginatedProducts(\DateTime $lastUpdate, $page = 0, $perPage = 25) : PaginatedProducts
+    public function getPaginatedProducts(\DateTime $lastUpdate = null, $page = 0, $perPage = 25) : PaginatedProducts
     {
         $responseObj = new PaginatedProducts();
         $params = ['page' => $page, 'perPage' => $perPage];
