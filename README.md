@@ -69,6 +69,7 @@ El resultado incluirá:
 * **Stock**: número de unidades en stock. Esta información se incluye siempre que el producto se añade al listado
 * **Precio**: información sobre el precio del producto, incluyendo el importe con impuesto, sin impuesto y la tasa aplicada. Este dato sólo se incluye cuando el precio ha cambiado desde la última consulta.
 * **Detalles**: información detallada del producto, incluyendo nombre,  imágenes, valores de atributo, etc. Sólo se incluye cuando ha cambiado algún valor desde la última consulta.
+* **Imágenes**: Listado de imágenes del producto. Cada imagen contiene URLs en diferentes tamaños, relación de aspecto y color predominante. Se incluyen todas las imágenes del producto cuando cualquiera de ellas se ha modificado desde la última consulta. Si no ha habido cambios, se envía `null`.
 
 Toma los siguientes parámetros:
 

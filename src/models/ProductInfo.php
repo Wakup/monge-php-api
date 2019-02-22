@@ -11,7 +11,7 @@ namespace Wakup;
 
 class ProductInfo
 {
-    private $name, $description, $short_description, $category, $active, $properties, $images;
+    private $name, $description, $short_description, $category, $active, $properties;
 
     /**
      * @return string Product display name
@@ -81,22 +81,6 @@ class ProductInfo
         }
         // Remove static values from properties array
         $this->properties = $properties;
-    }
-
-    /**
-     * @return ProductImage[] Product images
-     */
-    public function getImages() : array
-    {
-        return $this->images;
-    }
-
-    /**
-     * @param ProductImage[] $images Product images
-     */
-    public function setImages(array $images): void
-    {
-        $this->images = $images;
     }
 
     // Static properties

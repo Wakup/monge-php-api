@@ -11,7 +11,7 @@ namespace Wakup;
 
 class Product
 {
-    private $sku, $stock, $price, $info;
+    private $sku, $stock, $price, $info, $images;
 
     /**
      * @return string Product unique SKU
@@ -75,6 +75,22 @@ class Product
     public function setInfo(ProductInfo $info): void
     {
         $this->info = $info;
+    }
+
+    /**
+     * @return ProductImage[] Product images. Will be null if images has no changes since last update
+     */
+    public function getImages() : array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param ProductImage[] $images Product images. Will be null if images has no changes since last update
+     */
+    public function setImages(array $images): void
+    {
+        $this->images = $images;
     }
 
 
