@@ -14,7 +14,7 @@ namespace Wakup;
  */
 class ProductImage
 {
-    private $aspectRatio, $backgroundColor, $width, $height, $thumbnail, $small, $medium, $large;
+    private $aspectRatio, $backgroundColor, $width, $height, $url;
 
     /**
      * @return float Image aspect ratio (width / height)
@@ -81,68 +81,19 @@ class ProductImage
     }
 
     /**
-     * @return string URL for thumbnail image (max size 150x150)
+     * @return string Image source URL
      */
-    public function getThumbnail() : string
+    public function getUrl() : string
     {
-        return $this->thumbnail;
+        return $this->url;
     }
 
     /**
-     * @param string $thumbnail URL for thumbnail image (max size 150x150)
+     * @param string $url Image source URL
      */
-    public function setThumbnail(string $thumbnail): void
+    public function setUrl(string $url): void
     {
-        $this->thumbnail = $thumbnail;
+        $this->url = $url;
     }
-
-    /**
-     * @return string URL for small size image (max size 350350)
-     */
-    public function getSmall() : string
-    {
-        return $this->small;
-    }
-
-    /**
-     * @param string $small URL for small size image (max size 350350)
-     */
-    public function setSmall(string $small): void
-    {
-        $this->small = $small;
-    }
-
-    /**
-     * @return string URL for medium size image (max size 800x800)
-     */
-    public function getMedium() : string
-    {
-        return $this->medium;
-    }
-
-    /**
-     * @param string $medium URL for medium size image (max size 800x800)
-     */
-    public function setMedium(string $medium): void
-    {
-        $this->medium = $medium;
-    }
-
-    /**
-     * @return string URL for large size image (max size 1200x1200)
-     */
-    public function getLarge() : string
-    {
-        return $this->large;
-    }
-
-    /**
-     * @param string $large URL for large size image (max size 1200x1200)
-     */
-    public function setLarge(string $large): void
-    {
-        $this->large = $large;
-    }
-
 
 }
