@@ -47,15 +47,15 @@ class Category
     }
 
     /**
-     * @return string|null Parent category identifier
+     * @return string Parent category identifier
      */
-    public function getParentCategory() : string
+    public function getParentCategory() : ?string
     {
         return $this->parentCategory;
     }
 
     /**
-     * @param string|null $parentCategory
+     * @param string $parentCategory
      */
     public function setParentCategory($parentCategory): void
     {

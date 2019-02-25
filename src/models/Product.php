@@ -48,7 +48,7 @@ class Product
     /**
      * @return ProductPrice Product price information. Will be null if there is no changes since last request
      */
-    public function getPrice() : ProductPrice
+    public function getPrice() : ?ProductPrice
     {
         return $this->price;
     }
@@ -56,7 +56,7 @@ class Product
     /**
      * @param ProductPrice $price Product price information. Will be null if there is no changes since last request
      */
-    public function setPrice(ProductPrice $price): void
+    public function setPrice(?ProductPrice $price): void
     {
         $this->price = $price;
     }
@@ -64,7 +64,7 @@ class Product
     /**
      * @return ProductInfo Product detailed info. Will be null if there is no changes since last request
      */
-    public function getInfo() : ProductInfo
+    public function getInfo() : ?ProductInfo
     {
         return $this->info;
     }
@@ -72,7 +72,7 @@ class Product
     /**
      * @param ProductInfo $info Product detailed info. Will be null if there is no changes since last request
      */
-    public function setInfo(ProductInfo $info): void
+    public function setInfo(?ProductInfo $info): void
     {
         $this->info = $info;
     }
@@ -80,7 +80,7 @@ class Product
     /**
      * @return ProductImage[] Product images. Will be null if images has no changes since last update
      */
-    public function getImages() : array
+    public function getImages() : ?array
     {
         return $this->images;
     }
@@ -88,7 +88,7 @@ class Product
     /**
      * @param ProductImage[] $images Product images. Will be null if images has no changes since last update
      */
-    public function setImages(array $images): void
+    public function setImages(?array $images): void
     {
         $this->images = $images;
     }

@@ -32,6 +32,7 @@ class HttpClient
     {
         $this->httpClient = new \GuzzleHttp\Client();
         $this->jsonMapper = new \JsonMapper();
+        $this->jsonMapper->bStrictNullTypes = false;
     }
 
     /**
