@@ -57,7 +57,7 @@ class Category
     /**
      * @param string $parentCategory
      */
-    public function setParentCategory($parentCategory): void
+    public function setParentCategory(?string $parentCategory): void
     {
         $this->parentCategory = $parentCategory;
     }
