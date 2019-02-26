@@ -32,7 +32,7 @@ class ProductInfo
     /**
      * @return string Product category identifier
      */
-    public function getCategory() : string
+    public function getCategory() : ?string
     {
         return $this->category;
     }
@@ -40,7 +40,7 @@ class ProductInfo
     /**
      * @param string $category Product category identifier
      */
-    public function setCategory(string $category): void
+    public function setCategory(?string $category): void
     {
         $this->category = $category;
     }
@@ -88,7 +88,7 @@ class ProductInfo
     /**
      * @return string Product detailed description
      */
-    public function getDescription() : string
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -96,7 +96,7 @@ class ProductInfo
     /**
      * @return string Product short description
      */
-    public function getShortDescription() : string
+    public function getShortDescription() : ?string
     {
         return $this->short_description;
     }

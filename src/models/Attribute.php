@@ -40,7 +40,7 @@ class Attribute
     /**
      * @return string[] Array of available values for enum attribute types
      */
-    public function getValues() : array
+    public function getValues() : ?array
     {
         return $this->values;
     }
@@ -112,7 +112,7 @@ class Attribute
     /**
      * @param string[] $values
      */
-    public function setValues(array $values): void
+    public function setValues(?array $values): void
     {
         $this->values = $values;
     }
