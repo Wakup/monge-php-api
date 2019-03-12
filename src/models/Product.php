@@ -30,17 +30,17 @@ class Product
     }
 
     /**
-     * @return int Available product units
+     * @return Stock Available product units
      */
-    public function getStock() : ?int
+    public function getStock() : ?Stock
     {
         return $this->stock;
     }
 
     /**
-     * @param int $stock Available product stock units
+     * @param Stock $stock Available product stock units
      */
-    public function setStock(?int $stock): void
+    public function setStock(?Stock $stock): void
     {
         $this->stock = $stock;
     }
