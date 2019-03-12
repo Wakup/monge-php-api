@@ -11,3 +11,4 @@ var_dump($products);
 foreach ($products->getProducts() as $product) {
     var_dump($product);
 }
+var_dump($wakupClient->getClientInfo('02-0448-0419'));

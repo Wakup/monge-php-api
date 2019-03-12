@@ -13,12 +13,19 @@ use GuzzleHttp\Exception\GuzzleException;
 class HttpClient
 {
 
-    const ENDPOINT = 'http://ecommerce.wakup.net:9000/';
+    const WAKUP_ENDPOINT = 'http://ecommerce.wakup.net:9000/';
+    const MONGE_ENDPOINT = 'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/';
+
 
     /**
      * @var \GuzzleHttp\Client
      */
-    var $httpClient;
+    var $wakupClient;
+
+    /**
+     * @var \GuzzleHttp\Client
+     */
+    var $mongeClient;
 
     /**
      * @var \JsonMapper
@@ -30,7 +37,8 @@ class HttpClient
      */
     public function __construct()
     {
-        $this->httpClient = new \GuzzleHttp\Client();
+        $this->wakupClient = new \GuzzleHttp\Client();
+        $this->mongeClient = new \GuzzleHttp\Client();
         $this->jsonMapper = new \JsonMapper();
         $this->jsonMapper->bStrictNullTypes = false;
     }
@@ -39,7 +47,7 @@ class HttpClient
      * Obtains the authentication headers for wakup requests
      * @return array Array of headers
      */
-    protected function getWakupHeaders() :array
+    protected function getWakupHeaders() : array
     {
         return ['API-Token' => '66145878-9b0f-415f-ac1b-f10c6306face'];
     }
@@ -54,7 +62,7 @@ class HttpClient
      */
     protected function launchGetRequest(string $path, array $queryParams, array $headers, $responseObject = null)
     {
-        return $this->launchRequest('GET', $path, $queryParams,  $headers, '', $responseObject);
+        return $this->launchRequest('GET', $path, $queryParams, $headers, '', $responseObject);
     }
 
     /**
@@ -70,9 +78,31 @@ class HttpClient
     private function launchRequest(string $method, string $path, array $queryParams, array $headers, string $body, $responseObject = null)
     {
         try {
-            $response = $this->httpClient->request($method, self::ENDPOINT . $path,
+            $response = $this->wakupClient->request($method, self::WAKUP_ENDPOINT . $path,
                 ['query' => $queryParams, 'body' => $body, 'headers' => $headers]);
             $obj = json_decode($response->getBody());
+            $this->jsonMapper->map($obj, $responseObject);
+            return $obj;
+        } catch (\JsonMapper_Exception $e) {
+            throw new WakupException($e->getMessage());
+        } catch (GuzzleException $e) {
+            throw new WakupException($e->getMessage());
+        }
+    }
+
+    /**
+     * @return mixed Returns the obtained JSON object
+     * @throws WakupException
+     */
+    protected function launchMongeRequest(int $port, string $path, array $jsonBody, $responseObject = null)
+    {
+        try {
+            $body = json_encode($jsonBody);
+            $url = strtr(self::MONGE_ENDPOINT, array('{$port}' => $port)).$path;
+            $response = $this->wakupClient->request('POST', $url,
+                ['Content-Type' => 'application-json', 'body' => $body]);
+            $responseWrapper = json_decode($response->getBody());
+            $obj = $responseWrapper['response'];
             $this->jsonMapper->map($obj, $responseObject);
             return $obj;
         } catch (\JsonMapper_Exception $e) {

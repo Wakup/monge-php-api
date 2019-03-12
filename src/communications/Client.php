@@ -63,6 +63,14 @@ class Client extends HttpClient
         return $responseObj;
     }
 
+    public function getClientInfo(string $clientIdentifier) : ClientInfo
+    {
+        $responseObj = new ClientInfo();
+        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $clientIdentifier, 'pais' => 'CR'];
+        $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params, $responseObj);
+        return $responseObj;
+    }
+
 
 
 }
