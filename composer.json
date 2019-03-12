@@ -14,7 +14,8 @@
         "php": ">=7.1.0",
         "guzzlehttp/guzzle": "6.3.3",
         "ext-json": "*",
-        "netresearch/jsonmapper": "v1.4.0"
+        "netresearch/jsonmapper": "v1.4.0",
+        "kamermans/guzzle-oauth2-subscriber": "v1.0.6"
     },
     "autoload": {
         "psr-4": {

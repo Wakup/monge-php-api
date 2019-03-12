@@ -10,6 +10,13 @@ namespace Wakup;
 
 use GuzzleHttp\Exception\GuzzleException;
 
+// Oauth2
+use kamermans\OAuth2\GrantType\ClientCredentials;
+use kamermans\OAuth2\OAuth2Middleware;
+use GuzzleHttp\HandlerStack;
+use kamermans\OAuth2\Signer\AccessToken\BearerAuth;
+use kamermans\OAuth2\Signer\ClientCredentials\PostFormData;
+
 class HttpClient
 {
 
@@ -38,9 +45,36 @@ class HttpClient
     public function __construct()
     {
         $this->wakupClient = new \GuzzleHttp\Client();
-        $this->mongeClient = new \GuzzleHttp\Client();
         $this->jsonMapper = new \JsonMapper();
         $this->jsonMapper->bStrictNullTypes = false;
+        $this->initMongeClient();
+    }
+
+    private function initMongeClient()
+    {
+        // Authorization client - this is used to request OAuth access tokens
+        $reauth_client = new \GuzzleHttp\Client([
+            // URL for access_token request
+            'base_uri' => 'https://login.microsoftonline.com/98048920-81ec-49aa-aa1a-1403f8889145/oauth2/token',
+        ]);
+        $reauth_config = [
+            "client_id" => "321eac47-bafb-4243-8b48-641a39940b20",
+            "client_secret" => "&=]h/!+7.0!D!*4]%^^}@.^=",
+            "resource" => "377e25ef-7261-4fc9-85b6-1269ccff02a8", // optional
+            "state" => time(), // optional
+        ];
+        $grant_type = new ClientCredentials($reauth_client, $reauth_config);
+        $oauth = new OAuth2Middleware($grant_type);
+        $oauth->setClientCredentialsSigner(new MicrosoftSigner($reauth_config['resource']));
+        $oauth->setAccessTokenSigner(new BearerAuth());
+
+        $stack = HandlerStack::create();
+        $stack->push($oauth);
+
+        $this->mongeClient = new \GuzzleHttp\Client([
+            'handler' => $stack,
+            'auth'    => 'oauth',
+        ]);
     }
 
     /**
@@ -99,10 +133,10 @@ class HttpClient
         try {
             $body = json_encode($jsonBody);
             $url = strtr(self::MONGE_ENDPOINT, array('{$port}' => $port)).$path;
-            $response = $this->wakupClient->request('POST', $url,
-                ['Content-Type' => 'application-json', 'body' => $body]);
+            $response = $this->mongeClient->request('POST', $url,
+                ['headers' => ['Content-Type' => 'application/json; charset=utf-8'], 'body' => $body]);
             $responseWrapper = json_decode($response->getBody());
-            $obj = $responseWrapper['response'];
+            $obj = $responseWrapper->response;
             $this->jsonMapper->map($obj, $responseObject);
             return $obj;
         } catch (\JsonMapper_Exception $e) {
