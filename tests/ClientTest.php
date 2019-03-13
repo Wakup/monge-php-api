@@ -16,31 +16,45 @@ use PHPUnit\Framework\TestCase;
 final class ClientTest extends TestCase
 {
 
+    private static function getClient() : \Wakup\Client
+    {
+        return new Wakup\Client();
+    }
+
     public function testGetPaginatedAttributesValue() : void
     {
-        $client = new Wakup\Client();
         $this->assertInstanceOf(
             \Wakup\PaginatedAttributes::class,
-            $client->getPaginatedAttributes()
+            static::getClient()->getPaginatedAttributes()
         );
     }
 
     public function testGetPaginatedCategoriesValue() : void
     {
-        $client = new Wakup\Client();
         $this->assertInstanceOf(
             \Wakup\PaginatedCategories::class,
-            $client->getPaginatedCategories()
+            static::getClient()->getPaginatedCategories()
         );
     }
 
     public function testGetPaginatedProductsValue() : void
     {
-        $client = new Wakup\Client();
         $this->assertInstanceOf(
             \Wakup\PaginatedProducts::class,
-            $client->getPaginatedProducts()
+            static::getClient()->getPaginatedProducts()
         );
+    }
+
+    public function testGetUserCreditInfo() : void
+    {
+        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $this->assertInstanceOf(\Wakup\UserCreditInfo::class, $clientInfo);
+        $this->assertIsInt($clientInfo->getCreditLineId());
+        $this->assertIsInt($clientInfo->getAccountId());
+        $this->assertIsInt($clientInfo->getAccountStatusId());
+        $this->assertIsInt($clientInfo->getPersonId());
+        $this->assertIsFloat($clientInfo->getAvailableCreditFee());
+        $this->assertIsFloat($clientInfo->getAvailableCreditLine());
     }
 
 }
