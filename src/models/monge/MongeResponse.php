@@ -10,7 +10,7 @@ namespace Wakup;
 
 class MongeResponse
 {
-    var $response, $status, $traceInformation, $currentException;
+    private $response, $status, $traceInformation, $currentException;
 
     /**
      * @return array

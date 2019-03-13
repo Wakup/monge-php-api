@@ -8,15 +8,15 @@
 
 namespace Wakup;
 
-class ClientInfo
+class UserCreditInfo
 {
-    var $personId, $accountId, $accountStatusId, $accountStatus, $availableCreditLine,
+    private $personId, $accountId, $accountStatusId, $accountStatus, $availableCreditLine,
         $availableCreditFee, $creditLineId;
 
     /**
      * @return int Internal identifier for user on credit system
      */
-    public function getPersonId() : int
+    public function getPersonId() : ?int
     {
         return $this->personId;
     }
@@ -24,7 +24,7 @@ class ClientInfo
     /**
      * @param int $personId Internal identifier for user on credit system
      */
-    public function setIdPerson(int $personId): void
+    public function setIdPerson(?int $personId): void
     {
         $this->personId = $personId;
     }
@@ -32,7 +32,7 @@ class ClientInfo
     /**
      * @return int Identifier for user account on credit system
      */
-    public function getAccountId() : int
+    public function getAccountId() : ?int
     {
         return $this->accountId;
     }
@@ -40,7 +40,7 @@ class ClientInfo
     /**
      * @param int $accountId Identifier for user account on credit system
      */
-    public function setIdCuenta(int $accountId): void
+    public function setIdCuenta(?int $accountId): void
     {
         $this->accountId = $accountId;
     }
@@ -48,7 +48,7 @@ class ClientInfo
     /**
      * @return int Numeric identifier for user account status
      */
-    public function getAccountStatusId() : int
+    public function getAccountStatusId() : ?int
     {
         return $this->accountStatusId;
     }
@@ -64,7 +64,7 @@ class ClientInfo
     /**
      * @return string Description for user account status on credit system
      */
-    public function getAccountStatus() : string
+    public function getAccountStatus() : ?string
     {
         return $this->accountStatus;
     }
@@ -72,7 +72,7 @@ class ClientInfo
     /**
      * @param string $accountStatus Description for user account status on credit system
      */
-    public function setAccountStatus(string $accountStatus): void
+    public function setAccountStatus(?string $accountStatus): void
     {
         $this->accountStatus = $accountStatus;
     }
@@ -80,7 +80,7 @@ class ClientInfo
     /**
      * @return float Amount of credit line available for user
      */
-    public function getAvailableCreditLine() : float
+    public function getAvailableCreditLine() : ?float
     {
         return $this->availableCreditLine;
     }
@@ -88,7 +88,7 @@ class ClientInfo
     /**
      * @param float $availableCreditLine Amount of credit line available for user
      */
-    public function setDisponibleLinea(float $availableCreditLine): void
+    public function setDisponibleLinea(?float $availableCreditLine): void
     {
         $this->availableCreditLine = $availableCreditLine;
     }
@@ -96,7 +96,7 @@ class ClientInfo
     /**
      * @return float Available fee for user credit line
      */
-    public function getAvailableCreditFee() : float
+    public function getAvailableCreditFee() : ?float
     {
         return $this->availableCreditFee;
     }
@@ -104,7 +104,7 @@ class ClientInfo
     /**
      * @param float $availableCreditFee Available fee for user credit line
      */
-    public function setDisponibleCuota(float $availableCreditFee): void
+    public function setDisponibleCuota(?float $availableCreditFee): void
     {
         $this->availableCreditFee = $availableCreditFee;
     }
@@ -112,7 +112,7 @@ class ClientInfo
     /**
      * @return int Identifier for credit line assigned to user on credit system
      */
-    public function getCreditLineId() : int
+    public function getCreditLineId() : ?int
     {
         return $this->creditLineId;
     }
@@ -120,7 +120,7 @@ class ClientInfo
     /**
      * @param int $creditLineId Identifier for credit line assigned to user on credit system
      */
-    public function setIdLineaCredito(int $creditLineId): void
+    public function setIdLineaCredito(?int $creditLineId): void
     {
         $this->creditLineId = $creditLineId;
     }

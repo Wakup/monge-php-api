@@ -15,7 +15,6 @@ use kamermans\OAuth2\GrantType\ClientCredentials;
 use kamermans\OAuth2\OAuth2Middleware;
 use GuzzleHttp\HandlerStack;
 use kamermans\OAuth2\Signer\AccessToken\BearerAuth;
-use kamermans\OAuth2\Signer\ClientCredentials\PostFormData;
 
 class HttpClient
 {
@@ -52,6 +51,7 @@ class HttpClient
 
     private function initMongeClient()
     {
+        // TODO Export config to file or input parameter
         // Authorization client - this is used to request OAuth access tokens
         $reauth_client = new \GuzzleHttp\Client([
             // URL for access_token request
@@ -67,6 +67,7 @@ class HttpClient
         $oauth = new OAuth2Middleware($grant_type);
         $oauth->setClientCredentialsSigner(new MicrosoftSigner($reauth_config['resource']));
         $oauth->setAccessTokenSigner(new BearerAuth());
+        // TODO Include persistance
 
         $stack = HandlerStack::create();
         $stack->push($oauth);
@@ -83,6 +84,7 @@ class HttpClient
      */
     protected function getWakupHeaders() : array
     {
+        // TODO Export config to file or input parameter
         return ['API-Token' => '66145878-9b0f-415f-ac1b-f10c6306face'];
     }
 
@@ -105,7 +107,7 @@ class HttpClient
      * @param array $queryParams Query parameters to be included on URL for GET Requests
      * @param array $headers Request headers
      * @param string $body Request body
-     * @param null $responseObject Object to parse JSON result to. Ignored if null
+     * @param mixed $responseObject Object to parse JSON result to. Ignored if null
      * @return mixed Returns the obtained JSON object
      * @throws WakupException
      */
@@ -118,14 +120,19 @@ class HttpClient
             $this->jsonMapper->map($obj, $responseObject);
             return $obj;
         } catch (\JsonMapper_Exception $e) {
-            throw new WakupException($e->getMessage());
+            throw new WakupException($e);
         } catch (GuzzleException $e) {
-            throw new WakupException($e->getMessage());
+            throw new WakupException($e);
         }
     }
 
     /**
-     * @return mixed Returns the obtained JSON object
+     * @param int $port Port for HTTP web-service connection
+     * @param string $path Path for the request. Will be appended to the endpoint
+     * @param array $jsonBody Associative array with the content for request body
+     * @param mixed $responseObject Object to parse the JSON result to. If response is an array, the class name must be
+     * given. Ignored if null
+     * @return mixed|object Returns the obtained object or array
      * @throws WakupException
      */
     protected function launchMongeRequest(int $port, string $path, array $jsonBody, $responseObject = null)
@@ -137,12 +144,17 @@ class HttpClient
                 ['headers' => ['Content-Type' => 'application/json; charset=utf-8'], 'body' => $body]);
             $responseWrapper = json_decode($response->getBody());
             $obj = $responseWrapper->response;
-            $this->jsonMapper->map($obj, $responseObject);
-            return $obj;
+            $result = $obj;
+            if (is_string($responseObject)) {
+                $result = $this->jsonMapper->mapArray($obj, array(), $responseObject);
+            } else if (is_object($responseObject)) {
+                $result = $this->jsonMapper->map($obj, $responseObject);
+            }
+            return $result;
         } catch (\JsonMapper_Exception $e) {
-            throw new WakupException($e->getMessage());
+            throw new WakupException($e);
         } catch (GuzzleException $e) {
-            throw new WakupException($e->getMessage());
+            throw new WakupException($e);
         }
     }
 

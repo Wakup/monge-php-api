@@ -63,12 +63,16 @@ class Client extends HttpClient
         return $responseObj;
     }
 
-    public function getClientInfo(string $clientIdentifier) : ClientInfo
+    /**
+     * @param string $userIdentifier User VAT identifier
+     * @return UserCreditInfo Credit information for given user. Null if user is not registered on credit system.
+     * @throws WakupException
+     */
+    public function getUserCreditInfo(string $userIdentifier) : UserCreditInfo
     {
-        $responseObj = new ClientInfo();
-        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $clientIdentifier, 'pais' => 'CR'];
-        $response = $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params);
-        return $responseObj;
+        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier, 'pais' => 'CR'];
+        $responseArray = $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params, UserCreditInfo::class);
+        return count($responseArray) > 0 ? $responseArray[0] : null;
     }
 
 
