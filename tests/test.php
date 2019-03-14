@@ -13,3 +13,4 @@ foreach ($products->getProducts() as $product) {
 }
 $clientInfo = $wakupClient->getUserCreditInfo('02-0448-0419');
 var_dump($clientInfo->getAccountStatus());
+var_dump($wakupClient->getFinancialPromotions());

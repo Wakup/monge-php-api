@@ -57,4 +57,15 @@ final class ClientTest extends TestCase
         $this->assertIsFloat($clientInfo->getAvailableCreditLine());
     }
 
+    public function testGetUserFinancialPromotions() : void
+    {
+        $promotions = static::getClient()->getFinancialPromotions(145896, ['152950','146859']);
+        $this->assertIsArray($promotions);
+        foreach ($promotions as $promotion) {
+            $this->assertInstanceOf(\Wakup\FinancialPromocion::class, $promotion);
+            $this->assertIsInt($promotion->getId());
+            $this->assertIsString($promotion->getName());
+        }
+    }
+
 }

@@ -64,6 +64,9 @@ class Client extends HttpClient
     }
 
     /**
+     * Obtains the credit info of the user on Monge system, including available credit amount, fee and internal
+     * identifiers for later use on other requests.
+     *
      * @param string $userIdentifier User VAT identifier
      * @return UserCreditInfo Credit information for given user. Null if user is not registered on credit system.
      * @throws WakupException
@@ -73,6 +76,26 @@ class Client extends HttpClient
         $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier, 'pais' => 'CR'];
         $responseArray = $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params, UserCreditInfo::class);
         return count($responseArray) > 0 ? $responseArray[0] : null;
+    }
+
+    /**
+     * Obtains the available financial promotions for given user and products list.
+     *
+     * @param int $personId Monge internal user identifier
+     * @param string[] $skuList List of product SKUs included con shopping cart
+     * @return FinancialPromocion[] List of financial promotions that applies to given user and cart
+     * @throws WakupException
+     */
+    public function getFinancialPromotions(int $personId, array $skuList) : array
+    {
+        $params = [
+            'codigocanalVenta' => 260,
+            'codigoTienda' => 212,
+            'codigoArticulos' => join(',', $skuList),
+            'idPersona' => $personId
+            ];
+        $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarPromocion', $params, FinancialPromocion::class);
+        return $responseArray;
     }
 
 
