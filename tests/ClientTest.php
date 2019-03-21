@@ -59,12 +59,23 @@ final class ClientTest extends TestCase
 
     public function testGetUserFinancialPromotions() : void
     {
-        $promotions = static::getClient()->getFinancialPromotions(145896, ['152950','146859']);
-        $this->assertIsArray($promotions);
-        foreach ($promotions as $promotion) {
+        $results = static::getClient()->getFinancialPromotions(145896, ['152950','146859']);
+        $this->assertIsArray($results);
+        foreach ($results as $promotion) {
             $this->assertInstanceOf(\Wakup\FinancialPromocion::class, $promotion);
             $this->assertIsInt($promotion->getId());
             $this->assertIsString($promotion->getName());
+        }
+    }
+
+    public function testGetUserFinancialScenarios() : void
+    {
+
+        $results = static::getClient()->getFinancialScenarios(145896, 302, 1,
+            ['135360'], [21900], [], []);
+        $this->assertIsArray($results);
+        foreach ($results as $scenario) {
+            $this->assertInstanceOf(\Wakup\FinancialScenario::class, $scenario);
         }
     }
 

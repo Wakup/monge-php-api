@@ -92,11 +92,43 @@ class Client extends HttpClient
             'codigocanalVenta' => 260,
             'codigoTienda' => 212,
             'codigoArticulos' => join(',', $skuList),
-            'idPersona' => $personId
+            'idPersona' => $personId,
+            'pais' => 'CR'
             ];
         $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarPromocion', $params, FinancialPromocion::class);
         return $responseArray;
     }
+
+    public function getFinancialScenarios(
+        int $personId, int $creditLineId, int $promotionId,
+        array $skuList, array $pricesList, array $guaranteeSkuList, array $guaranteePricesList) : array
+    {
+        $products = [];
+        for($i = 0; $i < count($skuList); ++$i) {
+            array_push($products, join('&', [1, 0, $i, $skuList[$i]]));
+        }
+        $guarantees = [];
+        for($i = 0; $i < count($guaranteeSkuList); ++$i) {
+            array_push($guarantees, join('&', [1, 0, $i, $guaranteeSkuList[$i]]));
+        }
+
+        $params = [
+            'codCliente' => $personId,
+            'lineaCredito' => $creditLineId,
+            'idPromocion' => $promotionId,
+            'monto' => array_sum($pricesList) + array_sum($guaranteePricesList),
+            'codProductos' => join(';', $products),
+            'precioProductos' => join(';', $pricesList),
+            'codigoGarantia' => join(';', $guarantees),
+            'precioGarantia' => join(';', $guaranteePricesList),
+            'moneda' => 188,
+            'pais' => 'CR'
+        ];
+        $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarEscenarios', $params, FinancialScenario::class);
+        return $responseArray;
+    }
+
+
 
 
 
