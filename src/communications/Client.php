@@ -100,27 +100,36 @@ class Client extends HttpClient
     }
 
     public function getFinancialScenarios(
-        int $personId, int $creditLineId, int $promotionId,
-        array $skuList, array $pricesList, array $guaranteeSkuList, array $guaranteePricesList) : array
+        int $personId, int $creditLineId, int $promotionId, Cart $cart) : array
     {
-        $products = [];
-        for($i = 0; $i < count($skuList); ++$i) {
-            array_push($products, join('&', [1, 0, $i, $skuList[$i]]));
-        }
-        $guarantees = [];
-        for($i = 0; $i < count($guaranteeSkuList); ++$i) {
-            array_push($guarantees, join('&', [1, 0, $i, $guaranteeSkuList[$i]]));
+        $skuArray = [];
+        $guaranteeSkuArray = [];
+        $pricesArray = [];
+        $guaranteePricesArray = [];
+        for($i = 0; $i < count($cart->getProducts()); ++$i) {
+            $product = $cart->getProducts()[$i];
+            $formattedSku = join('&', [$product->getTypeId(), 0, $i, $product->getSku()]);
+            switch ($product->getTypeId()) {
+                case CartProduct::TYPE_ID_PRODUCT:
+                    array_push($skuArray, $formattedSku);
+                    array_push($pricesArray, $product->getTotalPrice());
+                    break;
+                case CartProduct::TYPE_ID_GUARANTEE:
+                    array_push($guaranteeSkuArray, $formattedSku);
+                    array_push($guaranteePricesArray, $product->getTotalPrice());
+                    break;
+            }
         }
 
         $params = [
             'codCliente' => $personId,
             'lineaCredito' => $creditLineId,
             'idPromocion' => $promotionId,
-            'monto' => array_sum($pricesList) + array_sum($guaranteePricesList),
-            'codProductos' => join(';', $products),
-            'precioProductos' => join(';', $pricesList),
-            'codigoGarantia' => join(';', $guarantees),
-            'precioGarantia' => join(';', $guaranteePricesList),
+            'monto' => $cart->getTotalPrice(),
+            'codProductos' => join(';', $skuArray),
+            'precioProductos' => join(';', $pricesArray),
+            'codigoGarantia' => join(';', $guaranteeSkuArray),
+            'precioGarantia' => join(';', $guaranteePricesArray),
             'moneda' => 188,
             'pais' => 'CR'
         ];

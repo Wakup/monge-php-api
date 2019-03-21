@@ -32,7 +32,7 @@ final class ClientTest extends TestCase
     public function testGetPaginatedCategoriesValue() : void
     {
         $this->assertInstanceOf(
-            \Wakup\PaginatedCategories::class,
+            Wakup\PaginatedCategories::class,
             static::getClient()->getPaginatedCategories()
         );
     }
@@ -70,9 +70,8 @@ final class ClientTest extends TestCase
 
     public function testGetUserFinancialScenarios() : void
     {
-
-        $results = static::getClient()->getFinancialScenarios(145896, 302, 1,
-            ['135360'], [21900], [], []);
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('135360', 21900)]);
+        $results = static::getClient()->getFinancialScenarios(145896, 302, 1, $cart);
         $this->assertIsArray($results);
         foreach ($results as $scenario) {
             $this->assertInstanceOf(\Wakup\FinancialScenario::class, $scenario);
