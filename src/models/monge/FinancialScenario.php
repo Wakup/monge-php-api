@@ -15,177 +15,177 @@ class FinancialScenario
         $frequency, $annualEffectiveRate, $guaranteeFee, $segmentId;
 
     /**
-     * @return mixed
+     * @return int Scenario identifier
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id Scenario identifier
      */
-    public function setIdPromocion($id): void
+    public function setIdPromocion(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @return float Credit term
      */
-    public function getTerm()
+    public function getTerm() : float
     {
         return $this->term;
     }
 
     /**
-     * @param mixed $term
+     * @param float $term Credit term
      */
-    public function setPlazo($term): void
+    public function setPlazo(string $term): void
     {
         $this->term = $term;
     }
 
     /**
-     * @return mixed
+     * @return float Interest rate of the credit
      */
-    public function getRate()
+    public function getRate() : float
     {
         return $this->rate;
     }
 
     /**
-     * @param mixed $rate
+     * @param float $rate Interest rate of the credit
      */
-    public function setTasa($rate): void
+    public function setTasa(float $rate): void
     {
         $this->rate = $rate;
     }
 
     /**
-     * @return mixed
+     * @return float Fee of the amount that is being financed
      */
-    public function getFee()
+    public function getFee() : float
     {
         return $this->fee;
     }
 
     /**
-     * @param mixed $fee
+     * @param float $fee Fee of the amount that is being financed
      */
-    public function setCuota($fee): void
+    public function setCuota(float $fee): void
     {
         $this->fee = $fee;
     }
 
     /**
-     * @return mixed
+     * @return float Total quota adding up previous debt installments
      */
-    public function getTotalFee()
+    public function getTotalFee() : float
     {
         return $this->totalFee;
     }
 
     /**
-     * @param mixed $totalFee
+     * @param float $totalFee Total quota adding up previous debt installments
      */
-    public function setCuotaTotalDePago($totalFee): void
+    public function setCuotaTotalDePago(float $totalFee): void
     {
         $this->totalFee = $totalFee;
     }
 
     /**
-     * @return mixed
+     * @return string Description of the segment
      */
-    public function getDescription()
+    public function getDescription() : string
     {
         return $this->description;
     }
 
     /**
-     * @param mixed $description
+     * @param string $description Description of the segment
      */
-    public function setDescripcionSegmento($description): void
+    public function setDescripcionSegmento(string $description): void
     {
         $this->description = $description;
     }
 
     /**
-     * @return mixed
+     * @return \DateTime Date of first payment
      */
-    public function getPaymentDate()
+    public function getPaymentDate() : \DateTime
     {
         return $this->paymentDate;
     }
 
     /**
-     * @param mixed $paymentDate
+     * @param string $paymentDate Date of first payment
      */
-    public function setFechaDePago($paymentDate): void
+    public function setFechaDePago(\DateTime $paymentDate): void
     {
         $this->paymentDate = $paymentDate;
     }
 
     /**
-     * @return mixed
+     * @return string Frequency of payment (Biweekly, Monthly, etc)
      */
-    public function getFrequency()
+    public function getFrequency() : string
     {
         return $this->frequency;
     }
 
     /**
-     * @param mixed $frequency
+     * @param string $frequency Frequency of payment (Biweekly, Monthly, etc)
      */
-    public function setFrecuencia($frequency): void
+    public function setFrecuencia(string $frequency): void
     {
         $this->frequency = $frequency;
     }
 
     /**
-     * @return mixed
+     * @return float Annual effective rate
      */
-    public function getAnnualEffectiveRate()
+    public function getAnnualEffectiveRate() : float
     {
         return $this->annualEffectiveRate;
     }
 
     /**
-     * @param mixed $annualEffectiveRate
+     * @param float $annualEffectiveRate Annual effective rate
      */
-    public function setTCEA($annualEffectiveRate): void
+    public function setTCEA(float $annualEffectiveRate): void
     {
         $this->annualEffectiveRate = $annualEffectiveRate;
     }
 
     /**
-     * @return mixed
+     * @return float Fee for the extra guarantee
      */
-    public function getGuaranteeFee()
+    public function getGuaranteeFee() : float
     {
         return $this->guaranteeFee;
     }
 
     /**
-     * @param mixed $guaranteeFee
+     * @param float $guaranteeFee Fee for the extra guarantee
      */
-    public function setExtraGarantia($guaranteeFee): void
+    public function setExtraGarantia(float $guaranteeFee): void
     {
         $this->guaranteeFee = $guaranteeFee;
     }
 
     /**
-     * @return mixed
+     * @return int Credit segment identifier
      */
-    public function getSegmentId()
+    public function getSegmentId() : int
     {
         return $this->segmentId;
     }
 
     /**
-     * @param mixed $segmentId
+     * @param int $segmentId Credit segment identifier
      */
-    public function setSegmento($segmentId): void
+    public function setSegmento(int $segmentId): void
     {
         $this->segmentId = $segmentId;
     }
