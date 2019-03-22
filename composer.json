@@ -19,7 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Wakup\\": ["src/", "src/models/monge/", "src/models/products/","src/communications/"]
+            "Wakup\\": ["src/", "src/models/monge/", "src/models/products/","src/communications/"],
+            "Wakup\\Requests\\": ["src/communications/requests"]
         }
     },
     "require-dev": {

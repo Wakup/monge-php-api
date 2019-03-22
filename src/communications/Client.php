@@ -73,7 +73,7 @@ class Client extends HttpClient
      */
     public function getUserCreditInfo(string $userIdentifier) : UserCreditInfo
     {
-        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier, 'pais' => 'CR'];
+        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier, 'pais' => $this->config->mongeCountryCode];
         $responseArray = $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params, UserCreditInfo::class);
         return count($responseArray) > 0 ? $responseArray[0] : null;
     }
@@ -89,16 +89,24 @@ class Client extends HttpClient
     public function getFinancialPromotions(int $personId, array $skuList) : array
     {
         $params = [
-            'codigocanalVenta' => 260,
-            'codigoTienda' => 212,
+            'codigocanalVenta' => $this->config->mongeChannelCode,
+            'codigoTienda' => $this->config->mongeShopCode,
             'codigoArticulos' => join(',', $skuList),
             'idPersona' => $personId,
-            'pais' => 'CR'
+            'pais' => $this->config->mongeCountryCode
             ];
         $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarPromocion', $params, FinancialPromocion::class);
         return $responseArray;
     }
 
+    /**
+     * @param int $personId
+     * @param int $creditLineId
+     * @param int $promotionId
+     * @param Cart $cart
+     * @return array
+     * @throws WakupException
+     */
     public function getFinancialScenarios(
         int $personId, int $creditLineId, int $promotionId, Cart $cart) : array
     {
@@ -130,8 +138,8 @@ class Client extends HttpClient
             'precioProductos' => join(';', $pricesArray),
             'codigoGarantia' => join(';', $guaranteeSkuArray),
             'precioGarantia' => join(';', $guaranteePricesArray),
-            'moneda' => 188,
-            'pais' => 'CR'
+            'moneda' => $this->config->mongeCurrencyId,
+            'pais' => $this->config->mongeCountryCode
         ];
         $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarEscenarios', $params, FinancialScenario::class);
         return $responseArray;

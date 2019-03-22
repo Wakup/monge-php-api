@@ -15,13 +15,10 @@ use kamermans\OAuth2\GrantType\ClientCredentials;
 use kamermans\OAuth2\OAuth2Middleware;
 use GuzzleHttp\HandlerStack;
 use kamermans\OAuth2\Signer\AccessToken\BearerAuth;
+use Wakup\Requests\Request;
 
 class HttpClient
 {
-
-    const WAKUP_ENDPOINT = 'http://ecommerce.wakup.net:9000/';
-    const MONGE_ENDPOINT = 'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/';
-
 
     /**
      * @var \GuzzleHttp\Client
@@ -34,33 +31,66 @@ class HttpClient
     var $mongeClient;
 
     /**
+     * @var \GuzzleHttp\Client
+     */
+    var $azureClient;
+
+    /**
      * @var \JsonMapper
      */
     var $jsonMapper;
+
+    /**
+     * @var Config
+     */
+    var $config;
 
     /**
      * Client constructor.
      */
     public function __construct()
     {
+        $this->config = $this->getConfig();
         $this->wakupClient = new \GuzzleHttp\Client();
         $this->jsonMapper = new \JsonMapper();
         $this->jsonMapper->bStrictNullTypes = false;
-        $this->initMongeClient();
+        $this->mongeClient =  $this->getOauthClient($this->config->mongeOauthConfig);
+        //$this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
     }
 
-    private function initMongeClient()
+    private function getConfig() : Config
     {
-        // TODO Export config to file or input parameter
+        // TODO take config as parameter
+        return new Config(
+            'http://ecommerce.wakup.net:9000/',
+            '66145878-9b0f-415f-ac1b-f10c6306face',
+            'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/', 'CR',
+            212, 260, 188,
+            new OauthConfig(
+                '98048920-81ec-49aa-aa1a-1403f8889145',
+                '321eac47-bafb-4243-8b48-641a39940b20',
+                '&=]h/!+7.0!D!*4]%^^}@.^=',
+                '377e25ef-7261-4fc9-85b6-1269ccff02a8'
+            ),
+            new OauthConfig(
+                'mongetest.onmicrosoft.com',
+                '5043a039-d6c0-4975-b02b-10733872b40b',
+                'xIMFrQfwaiyxmUXCoZUGk1Tn5SQqP4YT2qqTEPQH5ME',
+                'https://graph.windows.net'
+            ));
+    }
+
+    private function getOauthClient(OauthConfig $config) : \GuzzleHttp\Client
+    {
         // Authorization client - this is used to request OAuth access tokens
         $reauth_client = new \GuzzleHttp\Client([
             // URL for access_token request
-            'base_uri' => 'https://login.microsoftonline.com/98048920-81ec-49aa-aa1a-1403f8889145/oauth2/token',
+            'base_uri' => "https://login.microsoftonline.com/#{$config->tenant}/oauth2/token",
         ]);
         $reauth_config = [
-            "client_id" => "321eac47-bafb-4243-8b48-641a39940b20",
-            "client_secret" => "&=]h/!+7.0!D!*4]%^^}@.^=",
-            "resource" => "377e25ef-7261-4fc9-85b6-1269ccff02a8", // optional
+            "client_id" => $config->clientId,
+            "client_secret" => $config->clientSecret,
+            "resource" => $config->resource, // optional
             "state" => time(), // optional
         ];
         $grant_type = new ClientCredentials($reauth_client, $reauth_config);
@@ -72,7 +102,7 @@ class HttpClient
         $stack = HandlerStack::create();
         $stack->push($oauth);
 
-        $this->mongeClient = new \GuzzleHttp\Client([
+        return new \GuzzleHttp\Client([
             'handler' => $stack,
             'auth'    => 'oauth',
         ]);
@@ -85,7 +115,27 @@ class HttpClient
     protected function getWakupHeaders() : array
     {
         // TODO Export config to file or input parameter
-        return ['API-Token' => '66145878-9b0f-415f-ac1b-f10c6306face'];
+        return ['API-Token' => $this->config->wakupApiToken];
+    }
+
+    /**
+     * @param \GuzzleHttp\Client $client
+     * @param Request $request
+     * @return mixed
+     * @throws WakupException
+     */
+    private function launchGenericRequest(\GuzzleHttp\Client $client, Request $request)
+    {
+        try {
+            $response = $client->request($request->getMethod(), $request->getUrl(),
+                [
+                    'query' => $request->getQueryParams(),
+                    'body' => $request->getBodyContent(),
+                    'headers' => $request->getHeaders()]);
+            return $request->processResponse($response);
+        } catch (GuzzleException $e) {
+            throw new WakupException($e);
+        }
     }
 
     /**
@@ -114,7 +164,7 @@ class HttpClient
     private function launchRequest(string $method, string $path, array $queryParams, array $headers, string $body, $responseObject = null)
     {
         try {
-            $response = $this->wakupClient->request($method, self::WAKUP_ENDPOINT . $path,
+            $response = $this->wakupClient->request($method, $this->config->wakupEndpoint. $path,
                 ['query' => $queryParams, 'body' => $body, 'headers' => $headers]);
             $obj = json_decode($response->getBody());
             $this->jsonMapper->map($obj, $responseObject);
@@ -139,7 +189,7 @@ class HttpClient
     {
         try {
             $body = json_encode($jsonBody);
-            $url = strtr(self::MONGE_ENDPOINT, array('{$port}' => $port)).$path;
+            $url = strtr($this->config->mongeEndpoint, array('{$port}' => $port)).$path;
             $response = $this->mongeClient->request('POST', $url,
                 ['headers' => ['Content-Type' => 'application/json; charset=utf-8'], 'body' => $body]);
             $responseWrapper = json_decode($response->getBody());
