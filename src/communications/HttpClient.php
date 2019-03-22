@@ -55,7 +55,7 @@ class HttpClient
         $this->jsonMapper = new \JsonMapper();
         $this->jsonMapper->bStrictNullTypes = false;
         $this->mongeClient =  $this->getOauthClient($this->config->mongeOauthConfig);
-        //$this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
+        $this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
     }
 
     private function getConfig() : Config
@@ -85,7 +85,7 @@ class HttpClient
         // Authorization client - this is used to request OAuth access tokens
         $reauth_client = new \GuzzleHttp\Client([
             // URL for access_token request
-            'base_uri' => "https://login.microsoftonline.com/#{$config->tenant}/oauth2/token",
+            'base_uri' => "https://login.microsoftonline.com/{$config->tenant}/oauth2/token",
         ]);
         $reauth_config = [
             "client_id" => $config->clientId,
@@ -114,7 +114,6 @@ class HttpClient
      */
     protected function getWakupHeaders() : array
     {
-        // TODO Export config to file or input parameter
         return ['API-Token' => $this->config->wakupApiToken];
     }
 
@@ -193,14 +192,19 @@ class HttpClient
             $response = $this->mongeClient->request('POST', $url,
                 ['headers' => ['Content-Type' => 'application/json; charset=utf-8'], 'body' => $body]);
             $responseWrapper = json_decode($response->getBody());
-            $obj = $responseWrapper->response;
-            $result = $obj;
-            if (is_string($responseObject)) {
-                $result = $this->jsonMapper->mapArray($obj, array(), $responseObject);
-            } else if (is_object($responseObject)) {
-                $result = $this->jsonMapper->map($obj, $responseObject);
+            if ($responseWrapper->currentException)
+            {
+                throw new WakupException(new \Exception($responseWrapper->currentException));
+            } else {
+                $obj = $responseWrapper->response;
+                $result = $obj;
+                if (is_string($responseObject)) {
+                    $result = $this->jsonMapper->mapArray($obj, array(), $responseObject);
+                } else if (is_object($responseObject)) {
+                    $result = $this->jsonMapper->map($obj, $responseObject);
+                }
+                return $result;
             }
-            return $result;
         } catch (\JsonMapper_Exception $e) {
             throw new WakupException($e);
         } catch (GuzzleException $e) {
