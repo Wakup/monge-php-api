@@ -8,8 +8,6 @@
 
 namespace Wakup\Requests;
 
-use Psr\Http\Message\ResponseInterface;
-
 interface Request
 {
     function getMethod() : string;
@@ -17,5 +15,5 @@ interface Request
     function getQueryParams() : array;
     function getHeaders(): array;
     function getBodyContent() : string;
-    function processResponse(ResponseInterface $response);
+    function launch();
 }

@@ -20,7 +20,7 @@
     "autoload": {
         "psr-4": {
             "Wakup\\": ["src/", "src/models/monge/", "src/models/products/","src/communications/"],
-            "Wakup\\Requests\\": ["src/communications/requests"]
+            "Wakup\\Requests\\": ["src/communications/requests", "src/communications/requests/wakup"]
         }
     },
     "require-dev": {

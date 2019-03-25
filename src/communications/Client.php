@@ -9,6 +9,8 @@
 namespace Wakup;
 
 
+use Wakup\Requests\WakupRequest;
+
 class Client extends HttpClient
 {
 
@@ -22,10 +24,9 @@ class Client extends HttpClient
      */
     public function getPaginatedAttributes($page = 0, $perPage = 25) : PaginatedAttributes
     {
-        $responseObj = new PaginatedAttributes();
-        $params = ['page' => $page, 'perPage' => $perPage];
-        $this->launchGetRequest('catalog/attributes', $params, $this->getWakupHeaders(), $responseObj);
-        return $responseObj;
+        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedAttributes(),
+            'catalog/attributes', [], $page, $perPage);
+        return $request->launch();
     }
 
     /**
@@ -38,10 +39,9 @@ class Client extends HttpClient
      */
     public function getPaginatedCategories($page = 0, $perPage = 25) : PaginatedCategories
     {
-        $responseObj = new PaginatedCategories();
-        $params = ['page' => $page, 'perPage' => $perPage];
-        $this->launchGetRequest('catalog/categories', $params, $this->getWakupHeaders(), $responseObj);
-        return $responseObj;
+        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedCategories(),
+            'catalog/categories', [], $page, $perPage);
+        return $request->launch();
     }
 
     /**
@@ -56,11 +56,10 @@ class Client extends HttpClient
      */
     public function getPaginatedProducts(\DateTime $lastUpdate = null, $page = 0, $perPage = 25) : PaginatedProducts
     {
-        $responseObj = new PaginatedProducts();
-        $params = ['page' => $page, 'perPage' => $perPage];
-        if ($lastUpdate != null) $params['lastUpdate'] = $lastUpdate->format(\DateTime::ATOM);
-        $this->launchGetRequest('catalog/products', $params, $this->getWakupHeaders(), $responseObj);
-        return $responseObj;
+        $params = $lastUpdate != null ? ['lastUpdate' => $lastUpdate->format(\DateTime::ATOM)] : [];
+        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedProducts(),
+            'catalog/products', $params, $page, $perPage);
+        return $request->launch();
     }
 
     /**
