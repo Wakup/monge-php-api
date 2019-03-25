@@ -9,6 +9,7 @@
 namespace Wakup;
 
 
+use Wakup\Requests\MongeRequest;
 use Wakup\Requests\WakupRequest;
 
 class Client extends HttpClient
@@ -72,8 +73,11 @@ class Client extends HttpClient
      */
     public function getUserCreditInfo(string $userIdentifier) : UserCreditInfo
     {
-        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier, 'pais' => $this->config->mongeCountryCode];
-        $responseArray = $this->launchMongeRequest(96, 'Cliente/BuscarCliente', $params, UserCreditInfo::class);
+        $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier];
+        $request = new MongeRequest($this->config, $this->mongeClient, UserCreditInfo::class,
+            'Cliente/BuscarCliente', 96, $params);
+        // Return only first value
+        $responseArray = $request->launch();
         return count($responseArray) > 0 ? $responseArray[0] : null;
     }
 
@@ -91,11 +95,11 @@ class Client extends HttpClient
             'codigocanalVenta' => $this->config->mongeChannelCode,
             'codigoTienda' => $this->config->mongeShopCode,
             'codigoArticulos' => join(',', $skuList),
-            'idPersona' => $personId,
-            'pais' => $this->config->mongeCountryCode
+            'idPersona' => $personId
             ];
-        $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarPromocion', $params, FinancialPromocion::class);
-        return $responseArray;
+        $request = new MongeRequest($this->config, $this->mongeClient, FinancialPromocion::class,
+            'Cotizacion/ListarPromocion', 98, $params);
+        return $request->launch();
     }
 
     /**
@@ -137,15 +141,12 @@ class Client extends HttpClient
             'precioProductos' => join(';', $pricesArray),
             'codigoGarantia' => join(';', $guaranteeSkuArray),
             'precioGarantia' => join(';', $guaranteePricesArray),
-            'moneda' => $this->config->mongeCurrencyId,
-            'pais' => $this->config->mongeCountryCode
+            'moneda' => $this->config->mongeCurrencyId
         ];
-        $responseArray = $this->launchMongeRequest(98, 'Cotizacion/ListarEscenarios', $params, FinancialScenario::class);
-        return $responseArray;
+        $request = new MongeRequest($this->config, $this->mongeClient, FinancialScenario::class,
+            'Cotizacion/ListarEscenarios', 98, $params);
+        return $request->launch();
     }
-
-
-
 
 
 }

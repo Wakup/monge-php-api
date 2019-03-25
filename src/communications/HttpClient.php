@@ -36,11 +36,6 @@ class HttpClient
     var $azureClient;
 
     /**
-     * @var \JsonMapper
-     */
-    var $jsonMapper;
-
-    /**
      * @var Config
      */
     var $config;
@@ -52,8 +47,6 @@ class HttpClient
     {
         $this->config = $this->getConfig();
         $this->wakupClient = new \GuzzleHttp\Client();
-        $this->jsonMapper = new \JsonMapper();
-        $this->jsonMapper->bStrictNullTypes = false;
         $this->mongeClient =  $this->getOauthClient($this->config->mongeOauthConfig);
         $this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
     }
@@ -106,110 +99,6 @@ class HttpClient
             'handler' => $stack,
             'auth'    => 'oauth',
         ]);
-    }
-
-    /**
-     * Obtains the authentication headers for wakup requests
-     * @return array Array of headers
-     */
-    protected function getWakupHeaders() : array
-    {
-        return ['API-Token' => $this->config->wakupApiToken];
-    }
-
-    /**
-     * @param \GuzzleHttp\Client $client
-     * @param Request $request
-     * @return mixed
-     * @throws WakupException
-     */
-    private function launchGenericRequest(\GuzzleHttp\Client $client, Request $request)
-    {
-        try {
-            $response = $client->request($request->getMethod(), $request->getUrl(),
-                [
-                    'query' => $request->getQueryParams(),
-                    'body' => $request->getBodyContent(),
-                    'headers' => $request->getHeaders()]);
-            return $request->processResponse($response);
-        } catch (GuzzleException $e) {
-            throw new WakupException($e);
-        }
-    }
-
-    /**
-     * @param string $path Path for the request. Will be appended to the endpoint
-     * @param array $queryParams Query parameters to be included on URL for GET Requests
-     * @param array $headers Request headers
-     * @param null $responseObject Object to parse JSON result to. Ignored if null
-     * @return mixed Returns the obtained JSON object
-     * @throws WakupException
-     */
-    protected function launchGetRequest(string $path, array $queryParams, array $headers, $responseObject = null)
-    {
-        return $this->launchRequest('GET', $path, $queryParams, $headers, '', $responseObject);
-    }
-
-    /**
-     * @param string $method HTTP request method (GET, POST, PUT, DELETE)
-     * @param string $path Path for the request. Will be appended to the endpoint
-     * @param array $queryParams Query parameters to be included on URL for GET Requests
-     * @param array $headers Request headers
-     * @param string $body Request body
-     * @param mixed $responseObject Object to parse JSON result to. Ignored if null
-     * @return mixed Returns the obtained JSON object
-     * @throws WakupException
-     */
-    private function launchRequest(string $method, string $path, array $queryParams, array $headers, string $body, $responseObject = null)
-    {
-        try {
-            $response = $this->wakupClient->request($method, $this->config->wakupEndpoint. $path,
-                ['query' => $queryParams, 'body' => $body, 'headers' => $headers]);
-            $obj = json_decode($response->getBody());
-            $this->jsonMapper->map($obj, $responseObject);
-            return $obj;
-        } catch (\JsonMapper_Exception $e) {
-            throw new WakupException($e);
-        } catch (GuzzleException $e) {
-            throw new WakupException($e);
-        }
-    }
-
-    /**
-     * @param int $port Port for HTTP web-service connection
-     * @param string $path Path for the request. Will be appended to the endpoint
-     * @param array $jsonBody Associative array with the content for request body
-     * @param mixed $responseObject Object to parse the JSON result to. If response is an array, the class name must be
-     * given. Ignored if null
-     * @return mixed|object Returns the obtained object or array
-     * @throws WakupException
-     */
-    protected function launchMongeRequest(int $port, string $path, array $jsonBody, $responseObject = null)
-    {
-        try {
-            $body = json_encode($jsonBody);
-            $url = strtr($this->config->mongeEndpoint, array('{$port}' => $port)).$path;
-            $response = $this->mongeClient->request('POST', $url,
-                ['headers' => ['Content-Type' => 'application/json; charset=utf-8'], 'body' => $body]);
-            $responseWrapper = json_decode($response->getBody());
-            if ($responseWrapper->currentException)
-            {
-                throw new WakupException(new \Exception($responseWrapper->currentException));
-            } else {
-                $obj = $responseWrapper->response;
-                $result = $obj;
-                if (is_string($responseObject)) {
-                    $result = $this->jsonMapper->mapArray($obj, array(), $responseObject);
-                } else if (is_object($responseObject)) {
-                    $result = $this->jsonMapper->map($obj, $responseObject);
-                }
-                return $result;
-            }
-        } catch (\JsonMapper_Exception $e) {
-            throw new WakupException($e);
-        } catch (GuzzleException $e) {
-            throw new WakupException($e);
-        }
     }
 
 }
