@@ -23,7 +23,7 @@ class CartProduct
      * @param $typeId int Product type identifier. Uses the TYPE_ID_* constants for available values
      * @param $count int Amount of products of the same type & price
      */
-    public function __construct(string $sku, float $price, int $typeId = self::TYPE_ID_PRODUCT, int $count = 1)
+    public function __construct(string $sku, float $price = 0, int $typeId = self::TYPE_ID_PRODUCT, int $count = 1)
     {
         $this->typeId = $typeId;
         $this->price = $price;

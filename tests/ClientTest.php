@@ -73,8 +73,25 @@ final class ClientTest extends TestCase
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('135360', 21900)]);
         $results = static::getClient()->getFinancialScenarios(145896, 302, 1, $cart);
         $this->assertIsArray($results);
-        foreach ($results as $scenario) {
-            $this->assertInstanceOf(\Wakup\FinancialScenario::class, $scenario);
+        foreach ($results as $item) {
+            $this->assertInstanceOf(\Wakup\FinancialScenario::class, $item);
+        }
+    }
+
+    public function testGetStoresStock() : void
+    {
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331'), new \Wakup\CartProduct('100332')]);
+        $stores = ['C212', 'C002'];
+        $results = static::getClient()->getStoresStock($stores, $cart);
+        foreach ($results as $item) {
+            $this->assertInstanceOf(\Wakup\StoreStock::class, $item);
+            $this->assertIsString($item->getStoreId());
+            $this->assertIsInt($item->getWarehouseId());
+            $this->assertIsArray($item->getItems());
+            foreach ($cart->getProducts() as $product) {
+                // Ensure that requested products are returned
+                $this->assertArrayHasKey($product->getSku(), $item->getItems());
+            }
         }
     }
 

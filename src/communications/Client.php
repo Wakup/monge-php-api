@@ -16,6 +16,7 @@ class Client extends HttpClient
 {
     // User session requests
     // ----------------------//
+
     public function isValidPassword(string $username, string $password) : bool
     {
         return true;
@@ -126,10 +127,12 @@ class Client extends HttpClient
     }
 
     /**
+     * Obtains the financial scenarios for a given promotion and cart
+     *
      * @param int $personId Monge internal user identifier
      * @param int $creditLineId Monge internal identifier for user credit line
      * @param int $promotionId Selected promotion ID
-     * @param Cart $cart Container for products added to cart by the user
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
      * @return FinancialScenario[] List of financial scenarios available for given cart and promotion
      * @throws WakupException
      */
@@ -171,7 +174,29 @@ class Client extends HttpClient
         return $request->launch();
     }
 
-
+    /**
+     * Obtains the stock availability of the given cart in the requested stores
+     *
+     * @param array $stores Array of store identifiers to obtain stock from
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
+     * @return StoreStock[] List of stock availability for each requested store
+     * @throws WakupException
+     */
+    public function getStoresStock(array $stores, Cart $cart) : array
+    {
+        $items = [];
+        foreach ($cart->getProducts() as $cartProduct) {
+            array_push($items, ['sku' => $cartProduct->getSku(), 'cantidad' => $cartProduct->getCount()]);
+        }
+        $params = [
+            'tiendas' => $stores,
+            'sistema' => 'Ecommerce',
+            'articulos' => $items
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, StoreStock::class,
+            'Inventario/ConsultaInventario', 93, $params);
+        return $request->launch();
+    }
 
 
 }
