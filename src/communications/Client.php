@@ -14,6 +14,26 @@ use Wakup\Requests\WakupRequest;
 
 class Client extends HttpClient
 {
+    // User session requests
+    // ----------------------//
+    public function isValidPassword(string $username, string $password) : bool
+    {
+        return true;
+    }
+
+    public function register(string $username, string $email, string $password)
+    {
+        return true;
+    }
+
+    public function resetPassword(string $username, string $newPassword)
+    {
+        return true;
+    }
+
+
+    // WAKUP Catalog requests
+    // ----------------------//
 
     /**
      * Obtains the paginated list of product attributes registered on Wakup catalogue manager
@@ -63,6 +83,9 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    // MONGE Requests
+    // ---------------//
+
     /**
      * Obtains the credit info of the user on Monge system, including available credit amount, fee and internal
      * identifiers for later use on other requests.
@@ -103,11 +126,11 @@ class Client extends HttpClient
     }
 
     /**
-     * @param int $personId
-     * @param int $creditLineId
-     * @param int $promotionId
-     * @param Cart $cart
-     * @return array
+     * @param int $personId Monge internal user identifier
+     * @param int $creditLineId Monge internal identifier for user credit line
+     * @param int $promotionId Selected promotion ID
+     * @param Cart $cart Container for products added to cart by the user
+     * @return FinancialScenario[] List of financial scenarios available for given cart and promotion
      * @throws WakupException
      */
     public function getFinancialScenarios(
@@ -147,6 +170,8 @@ class Client extends HttpClient
             'Cotizacion/ListarEscenarios', 98, $params);
         return $request->launch();
     }
+
+
 
 
 }
