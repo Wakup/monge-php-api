@@ -95,4 +95,11 @@ final class ClientTest extends TestCase
         }
     }
 
+    public function testReserveStoreStock() : void
+    {
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
+        $result = static::getClient()->reserveOrderStock('C002', $cart);
+        $this->assertIsString($result);
+    }
+
 }

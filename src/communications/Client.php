@@ -120,7 +120,7 @@ class Client extends HttpClient
             'codigoTienda' => $this->config->mongeShopCode,
             'codigoArticulos' => join(',', $skuList),
             'idPersona' => $personId
-            ];
+        ];
         $request = new MongeRequest($this->config, $this->mongeClient, FinancialPromocion::class,
             'Cotizacion/ListarPromocion', 98, $params);
         return $request->launch();
@@ -195,6 +195,30 @@ class Client extends HttpClient
         ];
         $request = new MongeRequest($this->config, $this->mongeClient, StoreStock::class,
             'Inventario/ConsultaInventario', 93, $params);
+        return $request->launch();
+    }
+
+    /**
+     * Makes the reservation of the products in the cart before the payment process of the order
+     *
+     * @param string $storeId Identifier of the store in which the reservation is done
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
+     * @return string Reservation identifier. Required to later cancel it.
+     * @throws WakupException
+     */
+    public function reserveOrderStock(string $storeId, Cart $cart) : string
+    {
+        $items = [];
+        foreach ($cart->getProducts() as $cartProduct) {
+            array_push($items, [
+                    'sku' => $cartProduct->getSku(),
+                    'cantidad' => $cartProduct->getCount(),
+                    'tienda' => $storeId,
+                    'pais' => $this->config->mongeCountryCode]
+            );
+        }
+        $request = new MongeRequest($this->config, $this->mongeClient, '',
+            'Inventario/ReservaInventario', 93, $items, false);
         return $request->launch();
     }
 

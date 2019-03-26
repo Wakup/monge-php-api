@@ -17,9 +17,11 @@ class MongeRequest extends JsonRequest
 
     private $responseObjectType;
 
-    public function __construct(Config $config, Client $client, $responseObjectType, string $path, int $port, $jsonBody, $method = 'POST')
+    public function __construct(Config $config, Client $client, $responseObjectType, string $path, int $port, $jsonBody,
+                                bool $includeCountryCode = true, $method = 'POST')
     {
-        $body = json_encode(array_merge($jsonBody, ['pais' => $config->mongeCountryCode]));
+        $mergedBody = $includeCountryCode ? array_merge($jsonBody, ['pais' => $config->mongeCountryCode]) : $jsonBody;
+        $body = json_encode($mergedBody);
         $url = strtr($config->mongeEndpoint, array('{$port}' => $port)).$path;
         $headers = ['Content-Type' => 'application/json-patch+json'];
         parent::__construct($config, $client, $method, $url, [], $headers, $body);
@@ -40,9 +42,9 @@ class MongeRequest extends JsonRequest
         } else {
             $obj = $parsedJson->response;
             $result = $obj;
-            if (is_string($this->responseObjectType)) {
+            if (is_string($this->responseObjectType) && is_array($parsedJson->response)) {
                 $result = $this->getJsonMapper()->mapArray($obj, array(), $this->responseObjectType);
-            } else if (is_object($parsedJson)) {
+            } else if (is_object($parsedJson) && is_object($this->responseObjectType)) {
                 $result = $this->getJsonMapper()->map($obj, $this->responseObjectType);
             }
             return $result;
