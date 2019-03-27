@@ -222,5 +222,20 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    /**
+     * Cancels a previously made store stock reservation
+     *
+     * @param string $reservationId Id of the reservation
+     * @return bool Returns true if request is successful
+     * @throws WakupException
+     */
+    public function cancelOrderStockReservation(string $reservationId) : bool
+    {
+        $params = ['idReserva' => $reservationId, 'codigoUsuario' => 'TiendaVirtual'];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Inventario/ReversaReservaInventario', 93, $params, false);
+        $request->launch();
+        return true;
+    }
 
 }

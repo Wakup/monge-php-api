@@ -95,11 +95,20 @@ final class ClientTest extends TestCase
         }
     }
 
+    private $reservationId;
     public function testReserveStoreStock() : void
     {
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
         $result = static::getClient()->reserveOrderStock('C002', $cart);
         $this->assertIsString($result);
+        $this->reservationId = $result;
+    }
+
+    public function testCancelStoreStockReservation() : void
+    {
+        $id = $this->reservationId != null ? $this->reservationId : '10000';
+        $result = static::getClient()->cancelOrderStockReservation($id);
+        $this->assertIsBool($result);
     }
 
 }
