@@ -21,7 +21,10 @@ final class ClientTest extends TestCase
         return new Wakup\Client();
     }
 
-    public function testGetPaginatedAttributesValue() : void
+    /**
+     * @group Wakup
+     */
+    public function testGetWakupPaginatedAttributesValue() : void
     {
         $this->assertInstanceOf(
             \Wakup\PaginatedAttributes::class,
@@ -29,7 +32,10 @@ final class ClientTest extends TestCase
         );
     }
 
-    public function testGetPaginatedCategoriesValue() : void
+    /**
+     * @group Wakup
+     */
+    public function testGetWakupPaginatedCategoriesValue() : void
     {
         $this->assertInstanceOf(
             Wakup\PaginatedCategories::class,
@@ -37,7 +43,10 @@ final class ClientTest extends TestCase
         );
     }
 
-    public function testGetPaginatedProductsValue() : void
+    /**
+     * @group Wakup
+     */
+    public function testGetWakupPaginatedProductsValue() : void
     {
         $this->assertInstanceOf(
             \Wakup\PaginatedProducts::class,
@@ -45,6 +54,9 @@ final class ClientTest extends TestCase
         );
     }
 
+    /**
+     * @group Wakup
+     */
     public function testGetUserCreditInfo() : void
     {
         $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
@@ -55,6 +67,22 @@ final class ClientTest extends TestCase
         $this->assertIsInt($clientInfo->getPersonId());
         $this->assertIsFloat($clientInfo->getAvailableCreditFee());
         $this->assertIsFloat($clientInfo->getAvailableCreditLine());
+    }
+
+    public function testGetGuaranteePlans() : void
+    {
+        $results = static::getClient()->getGuaranteePlans('100331', 1000);
+        $this->assertIsArray($results);
+        foreach ($results as $plan) {
+            $this->assertInstanceOf(\Wakup\GuaranteePlan::class, $plan);
+            $this->assertIsString($plan->getSku());
+            $this->assertStringStartsWith('99', $plan->getSku());
+            $this->assertIsString($plan->getDescription());
+            $this->assertIsInt($plan->getTerm());
+            $this->assertIsFloat($plan->getUnitPrice());
+            $this->assertIsFloat($plan->getTotalPrice());
+            $this->assertIsFloat($plan->getVatAmount());
+        }
     }
 
     public function testGetUserFinancialPromotions() : void
@@ -95,19 +123,25 @@ final class ClientTest extends TestCase
         }
     }
 
-    private $reservationId;
     public function testReserveStoreStock() : void
     {
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $result = static::getClient()->reserveOrderStock('C002', $cart);
+        $result = static::getClient()->reserveOrderStock('C002', 1001, $cart);
         $this->assertIsString($result);
         $this->reservationId = $result;
     }
 
     public function testCancelStoreStockReservation() : void
     {
-        $id = $this->reservationId != null ? $this->reservationId : '10000';
-        $result = static::getClient()->cancelOrderStockReservation($id);
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
+        $reservationId = static::getClient()->reserveOrderStock('C002', 1001, $cart);
+        $result = static::getClient()->cancelOrderStockReservation($reservationId);
+        $this->assertIsBool($result);
+    }
+
+    public function testProcessOrder() : void
+    {
+        $result = static::getClient()->processOrder(new \Wakup\Order());
         $this->assertIsBool($result);
     }
 

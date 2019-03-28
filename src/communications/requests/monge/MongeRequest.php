@@ -40,12 +40,14 @@ class MongeRequest extends JsonRequest
             // Raise exception if returned on response details
             throw new WakupException(new \Exception($parsedJson->currentException));
         } else {
-            $obj = $parsedJson->response;
+            $obj = property_exists($parsedJson, 'response') ? $parsedJson->response : null;
             $result = $obj;
-            if (is_string($this->responseObjectType) && is_array($parsedJson->response)) {
-                $result = $this->getJsonMapper()->mapArray($obj, array(), $this->responseObjectType);
-            } else if (is_object($parsedJson) && is_object($this->responseObjectType)) {
-                $result = $this->getJsonMapper()->map($obj, $this->responseObjectType);
+            if ($obj != null) {
+                if (is_string($this->responseObjectType) && is_array($parsedJson->response)) {
+                    $result = $this->getJsonMapper()->mapArray($obj, array(), $this->responseObjectType);
+                } else if (is_object($parsedJson) && is_object($this->responseObjectType)) {
+                    $result = $this->getJsonMapper()->map($obj, $this->responseObjectType);
+                }
             }
             return $result;
         }

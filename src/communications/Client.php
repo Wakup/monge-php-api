@@ -10,6 +10,7 @@ namespace Wakup;
 
 
 use Wakup\Requests\MongeRequest;
+use Wakup\Requests\ProcessOrderRequest;
 use Wakup\Requests\WakupRequest;
 
 class Client extends HttpClient
@@ -103,6 +104,23 @@ class Client extends HttpClient
         // Return only first value
         $responseArray = $request->launch();
         return count($responseArray) > 0 ? $responseArray[0] : null;
+    }
+
+    /**
+     * Obtains the list of available guarantee plans for a given product
+     *
+     * @param string $sku Product sku
+     * @param float $price Product price
+     * @return GuaranteePlan[] List of available guarantee plans for given product
+     * @throws WakupException
+     */
+    public function getGuaranteePlans(string $sku, float $price) : array
+    {
+        $params = ['sku' => $sku, 'costo' => $price];
+        $request = new MongeRequest($this->config, $this->mongeClient, Guarantee::class,
+            'Cotizacion/ConsultarPlanProducto', 97, $params);
+        $result = $request->launch();
+        return $result[0]->getProductPlans();
     }
 
     /**
@@ -206,7 +224,7 @@ class Client extends HttpClient
      * @return string Reservation identifier. Required to later cancel it.
      * @throws WakupException
      */
-    public function reserveOrderStock(string $storeId, Cart $cart) : string
+    public function reserveOrderStock(string $storeId, int $warehouseId, Cart $cart) : string
     {
         $items = [];
         foreach ($cart->getProducts() as $cartProduct) {
@@ -214,6 +232,7 @@ class Client extends HttpClient
                     'sku' => $cartProduct->getSku(),
                     'cantidad' => $cartProduct->getCount(),
                     'tienda' => $storeId,
+                    'bodegaOrigen' => $warehouseId,
                     'pais' => $this->config->mongeCountryCode]
             );
         }
@@ -233,7 +252,14 @@ class Client extends HttpClient
     {
         $params = ['idReserva' => $reservationId, 'codigoUsuario' => 'TiendaVirtual'];
         $request = new MongeRequest($this->config, $this->mongeClient, null,
-            'Inventario/ReversaReservaInventario', 93, $params, false);
+            'Inventario/ReversaReservaInventario', 93, $params);
+        $request->launch();
+        return true;
+    }
+
+    public function processOrder(Order $order)
+    {
+        $request = new ProcessOrderRequest($this->config, $this->mongeClient, $order);
         $request->launch();
         return true;
     }
