@@ -11,7 +11,23 @@ namespace Wakup;
 
 class GuaranteePlan
 {
-    private $sku, $term, $description, $unitPrice, $totalPrice, $vatAmount, $preSelected;
+    private $sku, $term, $description, $price, $preSelected;
+
+    /**
+     * GuaranteePlan constructor.
+     * @param $sku string Guarantee SKU
+     * @param $term int Duration of the guarantee in months
+     * @param $description string Internal description
+     * @param $price float Unit price of the guarantee
+     */
+    public function __construct($sku, $term, $description, $price)
+    {
+        $this->sku = $sku;
+        $this->term = $term;
+        $this->description = $description;
+        $this->price = $price;
+    }
+
 
     /**
      * @return string Guarantee SKU
@@ -64,25 +80,9 @@ class GuaranteePlan
     /**
      * @return float Unit price of the guarantee
      */
-    public function getUnitPrice() : float
+    public function getPrice() : float
     {
-        return $this->unitPrice;
-    }
-
-    /**
-     * @param float $unitPrice Unit price of the guarantee
-     */
-    public function setPrecioUnitario(float $unitPrice): void
-    {
-        $this->unitPrice = $unitPrice;
-    }
-
-    /**
-     * @return float Total price of the guarantee
-     */
-    public function getTotalPrice() : float
-    {
-        return $this->totalPrice;
+        return $this->price;
     }
 
     /**
@@ -90,23 +90,7 @@ class GuaranteePlan
      */
     public function setPrecioTotal(float $totalPrice): void
     {
-        $this->totalPrice = $totalPrice;
-    }
-
-    /**
-     * @return float Amount of applied taxes
-     */
-    public function getVatAmount() : float
-    {
-        return $this->vatAmount;
-    }
-
-    /**
-     * @param float $vatAmount Amount of applied taxes
-     */
-    public function setMontoIva(float $vatAmount): void
-    {
-        $this->vatAmount = $vatAmount;
+        $this->price = $totalPrice;
     }
 
     /**
