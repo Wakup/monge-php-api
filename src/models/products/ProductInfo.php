@@ -111,10 +111,10 @@ class ProductInfo
     }
 
     /**
-     * @return bool Defines if the product should be visible to the user while navigating on the ecommerce or if it
-     * will only be used as subproduct with direct reference
+     * @return bool Defines if the product should be visible as individual product to the user while navigating on the
+     * ecommerce or if it will always depend on a main product
      */
-    public function isVisible() : bool
+    public function isIndividualProduct() : bool
     {
         # TODO Extract required products from static properties
         return true;
