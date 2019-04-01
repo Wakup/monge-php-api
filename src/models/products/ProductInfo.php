@@ -48,7 +48,7 @@ class ProductInfo
     /**
      * @return bool Defines if the product is active and should be displayed on the ecommerce
      */
-    public function getActive() : bool
+    public function isActive() : bool
     {
         return $this->active;
     }
@@ -99,6 +99,25 @@ class ProductInfo
     public function getShortDescription() : ?string
     {
         return $this->short_description;
+    }
+
+    /**
+     * @return array List of SKUs of products that should be included in the cart along with the main product
+     */
+    public function getRequiredProducts() : array
+    {
+        # TODO Extract required products from static properties
+        return [];
+    }
+
+    /**
+     * @return bool Defines if the product should be visible to the user while navigating on the ecommerce or if it
+     * will only be used as subproduct with direct reference
+     */
+    public function isVisible() : bool
+    {
+        # TODO Extract required products from static properties
+        return true;
     }
 
 

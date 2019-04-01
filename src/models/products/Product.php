@@ -93,13 +93,4 @@ class Product
         $this->images = $images;
     }
 
-    /**
-     * @return array List of SKUs of products that should be included in the cart along with the main product
-     */
-    public function getRequiredProducts() : array
-    {
-        return [];
-    }
-
-
 }
