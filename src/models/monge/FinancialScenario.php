@@ -12,7 +12,7 @@ namespace Wakup;
 class FinancialScenario
 {
     private $id, $term, $rate, $fee, $totalFee, $description, $paymentDate,
-        $frequency, $annualEffectiveRate, $guaranteeFee, $segmentId;
+        $frequency, $annualEffectiveRate, $warrantyFee, $segmentId;
 
     /**
      * @return int Scenario identifier
@@ -159,19 +159,19 @@ class FinancialScenario
     }
 
     /**
-     * @return float Fee for the extra guarantee
+     * @return float Fee for the extra warranty
      */
-    public function getGuaranteeFee() : float
+    public function getWarrantyFee() : float
     {
-        return $this->guaranteeFee;
+        return $this->warrantyFee;
     }
 
     /**
-     * @param float $guaranteeFee Fee for the extra guarantee
+     * @param float $warrantyFee Fee for the extra warranty
      */
-    public function setExtraGarantia(float $guaranteeFee): void
+    public function setExtraGarantia(float $warrantyFee): void
     {
-        $this->guaranteeFee = $guaranteeFee;
+        $this->warrantyFee = $warrantyFee;
     }
 
     /**

@@ -107,17 +107,17 @@ class Client extends HttpClient
     }
 
     /**
-     * Obtains the list of available guarantee plans for a given product
+     * Obtains the list of available warranty plans for a given product
      *
      * @param string $sku Product sku
      * @param float $price Product price
-     * @return GuaranteePlan[] List of available guarantee plans for given product
+     * @return WarrantyPlan[] List of available warranty plans for given product
      * @throws WakupException
      */
-    public function getGuaranteePlans(string $sku, float $price) : array
+    public function getWarrantyPlans(string $sku, float $price) : array
     {
         $params = ['sku' => $sku, 'costo' => $price];
-        $request = new MongeRequest($this->config, $this->mongeClient, Guarantee::class,
+        $request = new MongeRequest($this->config, $this->mongeClient, Warranty::class,
             'Cotizacion/ConsultarPlanProducto', 97, $params);
         $result = $request->launch();
         return $result[0]->getProductPlans();
@@ -157,22 +157,23 @@ class Client extends HttpClient
     public function getFinancialScenarios(
         int $personId, int $creditLineId, int $promotionId, Cart $cart) : array
     {
+        $TYPE_ID_PRODUCT = 1;
+        $TYPE_ID_WARRANTY = 3;
         $skuArray = [];
-        $guaranteeSkuArray = [];
+        $warrantySkuArray = [];
         $pricesArray = [];
-        $guaranteePricesArray = [];
+        $warrantyPricesArray = [];
         for($i = 0; $i < count($cart->getProducts()); ++$i) {
             $product = $cart->getProducts()[$i];
-            $formattedSku = join('&', [$product->getTypeId(), 0, $i, $product->getSku()]);
-            switch ($product->getTypeId()) {
-                case CartProduct::TYPE_ID_PRODUCT:
-                    array_push($skuArray, $formattedSku);
-                    array_push($pricesArray, $product->getTotalPrice());
-                    break;
-                case CartProduct::TYPE_ID_GUARANTEE:
-                    array_push($guaranteeSkuArray, $formattedSku);
-                    array_push($guaranteePricesArray, $product->getTotalPrice());
-                    break;
+            // Add product SKU
+            $formattedSku = join('&', [$TYPE_ID_PRODUCT, 0, $i, $product->getSku()]);
+            array_push($skuArray, $formattedSku);
+            array_push($pricesArray, $product->getTotalPrice());
+            if ($product->hasWarranty()) {
+                // Add warranty SKUs
+                $formattedWarrantySku = join('&', [$TYPE_ID_WARRANTY, 0, $i, $product->getSku()]);
+                array_push($warrantySkuArray, $formattedWarrantySku);
+                array_push($warrantyPricesArray, $product->getWarrantyPlanTotalPrice());
             }
         }
 
@@ -180,11 +181,11 @@ class Client extends HttpClient
             'codCliente' => $personId,
             'lineaCredito' => $creditLineId,
             'idPromocion' => $promotionId,
-            'monto' => $cart->getTotalPrice(),
+            'monto' => $cart->getProductsPrice(),
             'codProductos' => join(';', $skuArray),
             'precioProductos' => join(';', $pricesArray),
-            'codigoGarantia' => join(';', $guaranteeSkuArray),
-            'precioGarantia' => join(';', $guaranteePricesArray),
+            'codigoGarantia' => join(';', $warrantySkuArray),
+            'precioGarantia' => join(';', $warrantyPricesArray),
             'moneda' => $this->config->mongeCurrencyId
         ];
         $request = new MongeRequest($this->config, $this->mongeClient, FinancialScenario::class,

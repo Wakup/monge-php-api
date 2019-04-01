@@ -44,24 +44,9 @@ class Cart
     }
 
     /**
-     * @param int $productType
-     * @return CartProduct[] List of products that matches the given product type
+     * @return float Obtains the total price of all the products in the cart, excluding warranty plans
      */
-    public function getProductsOfType(int $productType) : array
-    {
-        $result = [];
-        foreach ($this->getProducts() as $product) {
-            if ($product->getTypeId() == $productType) {
-                array_push($result, $product);
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @return float Obtains the total price of all the elements in the cart
-     */
-    public function getTotalPrice() :float
+    public function getProductsPrice() :float
     {
         $price = 0.0;
         foreach ($this->getProducts() as $product)

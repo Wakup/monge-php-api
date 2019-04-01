@@ -69,19 +69,17 @@ final class ClientTest extends TestCase
         $this->assertIsFloat($clientInfo->getAvailableCreditLine());
     }
 
-    public function testGetGuaranteePlans() : void
+    public function testGetWarrantyPlans() : void
     {
-        $results = static::getClient()->getGuaranteePlans('100331', 1000);
+        $results = static::getClient()->getWarrantyPlans('100331', 1000);
         $this->assertIsArray($results);
         foreach ($results as $plan) {
-            $this->assertInstanceOf(\Wakup\GuaranteePlan::class, $plan);
+            $this->assertInstanceOf(\Wakup\WarrantyPlan::class, $plan);
             $this->assertIsString($plan->getSku());
             $this->assertStringStartsWith('99', $plan->getSku());
             $this->assertIsString($plan->getDescription());
             $this->assertIsInt($plan->getTerm());
-            $this->assertIsFloat($plan->getUnitPrice());
-            $this->assertIsFloat($plan->getTotalPrice());
-            $this->assertIsFloat($plan->getVatAmount());
+            $this->assertIsFloat($plan->getPrice());
         }
     }
 
@@ -141,7 +139,14 @@ final class ClientTest extends TestCase
 
     public function testProcessOrder() : void
     {
-        $result = static::getClient()->processOrder(new \Wakup\Order());
+        $warranty = new \Wakup\WarrantyPlan('100331', 12, 'Extragarantia', 100000);
+        $product = new \Wakup\CartProduct('100331', 10000, 13, 1, $warranty);
+        $result = static::getClient()->processOrder(
+            new \Wakup\Order(
+                'order01',
+                new \Wakup\Cart([$product]),
+                new \Wakup\Store('C002', '1001', 'Shop name', 'Address', 0, 0),
+                \Wakup\Order::PAYMENT_METHOD_CREDIT_CARD));
         $this->assertIsBool($result);
     }
 

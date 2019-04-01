@@ -9,12 +9,12 @@
 namespace Wakup;
 
 
-class Guarantee
+class Warranty
 {
     private $productPlans;
 
     /**
-     * @return GuaranteePlan[] List of guarantee plans for a given
+     * @return WarrantyPlan[] List of warranty plans for a given
      */
     public function getProductPlans(): array
     {
@@ -22,7 +22,7 @@ class Guarantee
     }
 
     /**
-     * @param GuaranteePlan[] $productPlan List of guarantee plans for a given
+     * @param WarrantyPlan[] $productPlan List of warranty plans for a given
      */
     public function setPlanProducto(array $productPlan): void
     {

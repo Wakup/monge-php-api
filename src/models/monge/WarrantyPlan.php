@@ -9,16 +9,16 @@
 namespace Wakup;
 
 
-class GuaranteePlan
+class WarrantyPlan
 {
     private $sku, $term, $description, $price, $preSelected;
 
     /**
-     * GuaranteePlan constructor.
-     * @param $sku string Guarantee SKU
-     * @param $term int Duration of the guarantee in months
+     * WarrantyPlan constructor.
+     * @param $sku string Warranty SKU
+     * @param $term int Duration of the warranty in months
      * @param $description string Internal description
-     * @param $price float Unit price of the guarantee
+     * @param $price float Unit price of the warranty
      */
     public function __construct($sku, $term, $description, $price)
     {
@@ -30,7 +30,7 @@ class GuaranteePlan
 
 
     /**
-     * @return string Guarantee SKU
+     * @return string Warranty SKU
      */
     public function getSku() : string
     {
@@ -38,7 +38,7 @@ class GuaranteePlan
     }
 
     /**
-     * @param string $sku Guarantee SKU
+     * @param string $sku Warranty SKU
      */
     public function setSku(string $sku): void
     {
@@ -46,7 +46,7 @@ class GuaranteePlan
     }
 
     /**
-     * @return int Duration of the guarantee in months
+     * @return int Duration of the warranty in months
      */
     public function getTerm() : int
     {
@@ -54,7 +54,7 @@ class GuaranteePlan
     }
 
     /**
-     * @param int $term Duration of the guarantee in months
+     * @param int $term Duration of the warranty in months
      */
     public function setPlazo(int $term): void
     {
@@ -78,7 +78,7 @@ class GuaranteePlan
     }
 
     /**
-     * @return float Unit price of the guarantee
+     * @return float Unit price of the warranty
      */
     public function getPrice() : float
     {
@@ -86,7 +86,7 @@ class GuaranteePlan
     }
 
     /**
-     * @param float $totalPrice Total price of the guarantee
+     * @param float $totalPrice Total price of the warranty
      */
     public function setPrecioTotal(float $totalPrice): void
     {
@@ -94,7 +94,7 @@ class GuaranteePlan
     }
 
     /**
-     * @return bool Defines if the guarantee must be selected by default
+     * @return bool Defines if the warranty must be selected by default
      */
     public function getPreSelected() : bool
     {
@@ -102,7 +102,7 @@ class GuaranteePlan
     }
 
     /**
-     * @param bool $preSelected Defines if the guarantee must be selected by default
+     * @param bool $preSelected Defines if the warranty must be selected by default
      */
     public function setPlazoPreterminado(bool $preSelected): void
     {
