@@ -2,7 +2,7 @@
 
 La siguiente librería proporciona una interfaz PHP con los servicios web de Wakup y Monge.
 
-## Instalación
+## Instalación
 
 El proyecto está desplegada en _packagist_ como una librería de composer. Para incluirla al proyecto basta con añadirla como dependencia:
 
