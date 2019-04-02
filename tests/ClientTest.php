@@ -115,7 +115,7 @@ final class ClientTest extends TestCase
 
     public function testGetStoresStock() : void
     {
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331'), new \Wakup\CartProduct('100332')]);
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
         $stores = ['C212', 'C002'];
         $results = static::getClient()->getStoresStock($stores, $cart);
         foreach ($results as $item) {
