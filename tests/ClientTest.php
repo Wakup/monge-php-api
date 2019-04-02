@@ -21,6 +21,13 @@ final class ClientTest extends TestCase
         return new Wakup\Client();
     }
 
+    private function getTestUser() : \Wakup\User
+    {
+        return new \Wakup\User('01-0730-0179', \Wakup\User::ID_TYPE_TAX_ID,
+            'Ana', 'Isabel', 'Ramirez', 'Ramirez',
+            '1408804', '1365853', 'pruebas09@gmail.com');
+    }
+
     /**
      * @group Wakup
      */
@@ -76,10 +83,12 @@ final class ClientTest extends TestCase
         foreach ($results as $plan) {
             $this->assertInstanceOf(\Wakup\WarrantyPlan::class, $plan);
             $this->assertIsString($plan->getSku());
-            $this->assertStringStartsWith('99', $plan->getSku());
             $this->assertIsString($plan->getDescription());
             $this->assertIsInt($plan->getTerm());
             $this->assertIsFloat($plan->getPrice());
+            $this->assertIsFloat($plan->getTaxAmount());
+            $this->assertIsFloat($plan->getPriceWithoutTax());
+            $this->assertEquals($plan->getPrice(), $plan->getPriceWithoutTax() + $plan->getTaxAmount());
         }
     }
 
@@ -143,6 +152,7 @@ final class ClientTest extends TestCase
         $product = new \Wakup\CartProduct('100331', 10000, 13, 1, $warranty);
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
+                $this->getTestUser(),
                 'order01',
                 new \Wakup\Cart([$product]),
                 new \Wakup\Store('C002', '1001', 'Shop name', 'Address', 0, 0),

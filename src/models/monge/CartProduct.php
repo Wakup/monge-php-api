@@ -112,6 +112,14 @@ class CartProduct
     }
 
     /**
+     * @return float|null Obtains the total warranty price without tax by multiplying the warranty unit price by the product quantity
+     */
+    public function getWarrantyPlanTotalPriceWithoutTax() : ?float
+    {
+        return $this->getWarrantyPlan() != null ? $this->getWarrantyPlan()->getPriceWithoutTax() * $this->getCount() : null;
+    }
+
+    /**
      * @return WarrantyPlan Warranty plan linked with the products
      */
     public function getWarrantyPlan(): ?WarrantyPlan

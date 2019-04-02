@@ -11,23 +11,24 @@ namespace Wakup;
 
 class WarrantyPlan
 {
-    private $sku, $term, $description, $price, $preSelected;
+    private $sku, $term, $description, $price, $taxAmount, $preSelected;
 
     /**
      * WarrantyPlan constructor.
      * @param $sku string Warranty SKU
      * @param $term int Duration of the warranty in months
      * @param $description string Internal description
-     * @param $price float Unit price of the warranty
+     * @param $price float Unit price of the warranty, including taxes
+     * @param $taxAmount float Amount of tax for warranty
      */
-    public function __construct($sku, $term, $description, $price)
+    public function __construct($sku, $term, $description, $price, $taxAmount=0.0)
     {
         $this->sku = $sku;
         $this->term = $term;
         $this->description = $description;
         $this->price = $price;
+        $this->taxAmount = $taxAmount;
     }
-
 
     /**
      * @return string Warranty SKU
@@ -78,7 +79,7 @@ class WarrantyPlan
     }
 
     /**
-     * @return float Unit price of the warranty
+     * @return float Unit price of the warranty, including taxes
      */
     public function getPrice() : float
     {
@@ -86,7 +87,7 @@ class WarrantyPlan
     }
 
     /**
-     * @param float $totalPrice Total price of the warranty
+     * @param float $totalPrice Unit price of the warranty, including taxes
      */
     public function setPrecioTotal(float $totalPrice): void
     {
@@ -109,7 +110,29 @@ class WarrantyPlan
         $this->preSelected = $preSelected;
     }
 
+    /**
+     * @return float Amount of tax for warranty
+     */
+    public function getTaxAmount() : float
+    {
+        return $this->taxAmount;
+    }
 
+    /**
+     * @param float $taxAmount Amount of tax for warranty
+     */
+    public function setMontoIva(float $taxAmount): void
+    {
+        $this->taxAmount = $taxAmount;
+    }
+
+    /**
+     * @return float Obtains warranty price without taxes applied
+     */
+    public function getPriceWithoutTax() : float
+    {
+        return $this->getPrice() - $this->getTaxAmount();
+    }
 
 
 }

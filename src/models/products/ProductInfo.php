@@ -114,7 +114,16 @@ class ProductInfo
      * @return bool Defines if the product should be visible as individual product to the user while navigating on the
      * ecommerce or if it will always depend on a main product
      */
-    public function isIndividualProduct() : bool
+    public function isVisibleIndividually() : bool
+    {
+        # TODO Extract required products from static properties
+        return true;
+    }
+
+    /**
+     * @return bool Returns true if the product is available for extended warranty plans
+     */
+    public function hasWarrantyPlans() : bool
     {
         # TODO Extract required products from static properties
         return true;

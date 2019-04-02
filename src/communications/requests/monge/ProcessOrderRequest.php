@@ -24,6 +24,7 @@ class ProcessOrderRequest extends MongeRequest
     {
         $cart = $order->getCart();
         $store = $order->getStore();
+        $user = $order->getUser();
         $productArray = [];
         $warrantyArray = [];
         for($i = 0; $i < count($cart->getProducts()); ++$i) {
@@ -59,7 +60,7 @@ class ProcessOrderRequest extends MongeRequest
         #TODO separate warranty and standard product, export json serialize to request
         $orderJson = [
             'OrdenPedidoDetalle' => $productArray,
-            'OrdenPedidoDetalleExtragarantia' => $warranty,
+            'OrdenPedidoDetalleExtragarantia' => $warrantyArray,
             'OrdenPedidoFinanciacion' => null,
             'OrdenPedidoFormasPago' => [
                 [
@@ -69,24 +70,37 @@ class ProcessOrderRequest extends MongeRequest
                 ]
             ],
             'cliente' => [
-                'Identificacion' => '01-0730-0179',
-                'TipoIdentificacion' => 'CEDULA',
-                'PrimerNombre' => 'Ana',
-                'SegundoNombre' => 'Isabel',
-                'PrimerApellido' => 'Ramirez',
-                'SegundoApellido' => 'Ramirez',
-                'IdCuenta' => '1365853',
-                'IdPersona' => '1408804',
-                'Correo' => 'pruebas09@gmail.com'
+                'Identificacion' => $user->getId(),
+                'TipoIdentificacion' => $user->getIdType(),
+                'PrimerNombre' => $user->getFirstName(),
+                'SegundoNombre' => $user->getMiddleName(),
+                'PrimerApellido' => $user->getFirstSurname(),
+                'SegundoApellido' => $user->getSecondSurname(),
+                'IdCuenta' => $user->getAccountId(),
+                'IdPersona' => $user->getPersonId(),
+                'Correo' => $user->getEmail()
             ],
             'CodigoUsuario' => 'CLIENTE_ECOMMERCE',
-            'Tienda' => $config->mongeShopCode,
+            'Tienda' => "C{$config->mongeShopCode}",  // Requires to prepend C to shop code
             'TiendaRetiro' => $store->getSku(),
             'TipoOrden' => 'Orden.Ecommerce',
             'TipoVenta' => 'CR00005',
             'CanalVenta' => '260',
+            'CodigoMoneda' => $config->mongeCurrencyId,
+            'FechaProceso' => date('c'),
             'FormaPago' => $order->getPaymentMethod(),
             'NumeroOrden' => $order->getOrderNumber(),
+            'MontoCompra' => $cart->getProductsPriceWithoutTax(),
+            'Impuesto' => $cart->getProductsTaxAmount(),
+            'TotalCompra' => $cart->getProductsPrice(),
+            // Notifications
+            'NotificarWhatsApp' => false,
+            'NotificarSms' => false,
+            'NotificarEmail' => true,
+            'EmailContacto' => 'pruebas09@gmail.com',
+            'TelefonoContacto' => '8324-8614',
+            // Credit info
+            'Prima' => 0,
             'Plazo' => 0,
             'TasaInteresNormal' => 0,
             'TasaInteresMora' => 0,
@@ -94,22 +108,12 @@ class ProcessOrderRequest extends MongeRequest
             'CuotaPactada' => 0,
             'Descuento' => 0,
             'MontoFinanciado' => 0,
-            'MontoCompra' => 5743.36,
-            'Impuesto' => 746.64,
-            'TotalCompra' => 6490,
-            'NotificarWhatsApp' => false,
-            'NotificarSms' => false,
-            'NotificarEmail' => true,
-            'EmailContacto' => 'pruebas09@gmail.com',
-            'TelefonoContacto' => '8324-8614',
-            'CodigoMoneda' => '188',
-            'Prima' => 0,
-            'FechaProceso' => '2018-06-27T21:41:30.147',
-            'IdPromocion' => 0,
-            'IdSegmento' => 50001,
+            'IdPromocion' => 0, // Server crashes if null
+            'IdSegmento' => 0, // Server crashes if null
             'DescuentoTotal' => null,
             'EntregaCasa' => null,
             'FechaPrimerPago' => null,
+            // Delivery
             'Pais' => null,
             'Provincia' => null,
             'Canton' => null,
@@ -120,9 +124,12 @@ class ProcessOrderRequest extends MongeRequest
         ];
 
         $json = [
+            'tienda' => "C{$config->mongeShopCode}", // Requires to prepend C to shop code
             'idMensaje' => 123,
+            'idEstadoMensaje' => 0,
+            'idTipoMensaje' => 0,
+            'idPais' => 1,
             'detalleProceso' => [],
-            'tienda' => "C212",
             'reintentos' => 0,
             'estadoProceso' => 0,
             'msjError' => "",
@@ -131,13 +138,10 @@ class ProcessOrderRequest extends MongeRequest
                 'idPais' => 1,
                 'codigoSAP' => "CR"
             ],
-            'fecha' => "2018-11-13",
+            'fecha' => date('Y-m-d'),
             'detalle' => json_encode($orderJson),
-            'idEstadoMensaje' => 0,
             'usuario' => "Ecommerce",
-            'idTipoMensaje' => 0,
             'origen' => "Ecommerce",
-            'idPais' => 1
         ];
 
         parent::__construct($config, $client, null,

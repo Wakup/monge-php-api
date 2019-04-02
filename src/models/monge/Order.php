@@ -35,13 +35,20 @@ class Order
     private $paymentMethod;
 
     /**
+     * @var User $user
+     */
+    private $user;
+
+    /**
      * Order constructor.
+     * @param User $user
      * @param Cart $cart
      * @param Store $store
      * @param string $paymentMethod
      */
-    public function __construct(string $orderNumber, Cart $cart, Store $store, string $paymentMethod)
+    public function __construct(User $user, string $orderNumber, Cart $cart, Store $store, string $paymentMethod)
     {
+        $this->user = $user;
         $this->orderNumber = $orderNumber;
         $this->cart = $cart;
         $this->store = $store;
@@ -78,6 +85,14 @@ class Order
     public function getPaymentMethod(): string
     {
         return $this->paymentMethod;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
     }
 
 

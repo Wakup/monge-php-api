@@ -44,7 +44,7 @@ class Cart
     }
 
     /**
-     * @return float Obtains the total price of all the products in the cart, excluding warranty plans
+     * @return float Obtains the total price of all the products in the cart, including warranty plans
      */
     public function getProductsPrice() :float
     {
@@ -52,8 +52,35 @@ class Cart
         foreach ($this->getProducts() as $product)
         {
             $price += $product->getTotalPrice();
+            if ($product->hasWarranty()) {
+                $price += $product->getWarrantyPlanTotalPrice();
+            }
         }
         return $price;
+    }
+
+    /**
+     * @return float Obtains the total price of all the products in the cart, excluding warranty plans
+     */
+    public function getProductsPriceWithoutTax() :float
+    {
+        $price = 0.0;
+        foreach ($this->getProducts() as $product)
+        {
+            $price += $product->getTotalPriceWithoutTax();
+            if ($product->hasWarranty()) {
+                $price += $product->getWarrantyPlanTotalPriceWithoutTax();
+            }
+        }
+        return $price;
+    }
+
+    /**
+     * @return float Obtains the total amount of taxes
+     */
+    public function getProductsTaxAmount() : float
+    {
+        return $this->getProductsPrice() - $this->getProductsPriceWithoutTax();
     }
 
 
