@@ -66,9 +66,9 @@ class HttpClient
                 '377e25ef-7261-4fc9-85b6-1269ccff02a8'
             ),
             new OauthConfig(
-                'mongetest.onmicrosoft.com',
-                '5043a039-d6c0-4975-b02b-10733872b40b',
-                'xIMFrQfwaiyxmUXCoZUGk1Tn5SQqP4YT2qqTEPQH5ME',
+                'grupomongetvdev.onmicrosoft.com',
+                '58d597dd-59d9-48f6-8404-cd77f5ae4765',
+                'sOHaAAB5uKmuLcsJNLZH9x/NVFwdcPMiu7QMgunRk28=',
                 'https://graph.windows.net'
             ),
             'https://grupomongetvdev.b2clogin.com/grupomongetvdev.onmicrosoft.com/oauth2/v2.0/token',

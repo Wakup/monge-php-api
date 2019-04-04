@@ -14,6 +14,6 @@ interface Request
     function getUrl() : string;
     function getQueryParams() : array;
     function getHeaders(): array;
-    function getBodyContent() : string;
+    function getBodyContent() : ?string;
     function launch();
 }

@@ -13,7 +13,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
 
-final class ClientTest extends TestCase
+final class MongeRequestsTest extends TestCase
 {
 
     private static function getClient() : \Wakup\Client
@@ -26,39 +26,6 @@ final class ClientTest extends TestCase
         return new \Wakup\User('01-0730-0179', \Wakup\User::ID_TYPE_TAX_ID,
             'Ana', 'Isabel', 'Ramirez', 'Ramirez',
             '1408804', '1365853', 'pruebas09@gmail.com');
-    }
-
-    /**
-     * @group Wakup
-     */
-    public function testGetWakupPaginatedAttributesValue() : void
-    {
-        $this->assertInstanceOf(
-            \Wakup\PaginatedAttributes::class,
-            static::getClient()->getPaginatedAttributes()
-        );
-    }
-
-    /**
-     * @group Wakup
-     */
-    public function testGetWakupPaginatedCategoriesValue() : void
-    {
-        $this->assertInstanceOf(
-            Wakup\PaginatedCategories::class,
-            static::getClient()->getPaginatedCategories()
-        );
-    }
-
-    /**
-     * @group Wakup
-     */
-    public function testGetWakupPaginatedProductsValue() : void
-    {
-        $this->assertInstanceOf(
-            \Wakup\PaginatedProducts::class,
-            static::getClient()->getPaginatedProducts()
-        );
     }
 
     /**
@@ -159,17 +126,4 @@ final class ClientTest extends TestCase
                 \Wakup\Order::PAYMENT_METHOD_CREDIT_CARD));
         $this->assertIsBool($result);
     }
-
-    public function testCorrectLogin() : void
-    {
-        $result = static::getClient()->login('testcasesUser@gmail.com', 'P@ssword!');
-        $this->assertTrue($result);
-    }
-
-    public function testIncorrectLogin() : void
-    {
-        $result = static::getClient()->login('testcasesUser@gmail.com', 'invalid-pass');
-        $this->assertFalse($result);
-    }
-
 }

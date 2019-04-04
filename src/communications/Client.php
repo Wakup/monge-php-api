@@ -12,6 +12,7 @@ namespace Wakup;
 use Wakup\Requests\LoginRequest;
 use Wakup\Requests\MongeRequest;
 use Wakup\Requests\ProcessOrderRequest;
+use Wakup\Requests\UsersRequest;
 use Wakup\Requests\WakupRequest;
 
 class Client extends HttpClient
@@ -34,19 +35,80 @@ class Client extends HttpClient
         return $request->launch();
     }
 
-    public function register(string $email, string $password) : User
+    /**
+     * @param string $email
+     * @param string $password
+     * @return User
+     * @throws WakupException
+     */
+    public function register(string $email, string $password) : AzureUser
     {
-        return true;
+        $jsonBody = [
+            'accountEnabled' => true,
+            'signInNames' => [
+                [
+                    'type' => 'emailAddress',
+                    'value' => $email
+                ]
+            ],
+            'displayName' => $email,
+            'creationType' => 'LocalAccount',
+            'passwordProfile' => [
+                'password' => $password,
+                'forceChangePasswordNextLogin' => false
+            ],
+            'passwordPolicies' => 'DisablePasswordExpiration'
+        ];
+        $request = new UsersRequest($this->config, $this->azureClient, 'POST', [], [], $jsonBody, new AzureUser());
+        return $request->launch();
     }
 
+    /**
+     * @param string $email
+     * @param string $newPassword
+     * @return bool
+     * @throws WakupException
+     */
     public function resetPassword(string $email, string $newPassword)
     {
+        $user = $this->findUser($email);
+        $jsonBody = [
+            "passwordProfile" => [
+                "password" => $newPassword,
+                "forceChangePasswordNextLogin" => false
+            ]
+        ];
+        $request = new UsersRequest($this->config, $this->azureClient, 'PATCH', [], [], $jsonBody,
+            null, $user->getObjectId());
+        $request->launch();
         return true;
     }
 
-    public function findUser(string $email) : User
+    /**
+     * @param $email
+     * @return bool
+     * @throws WakupException
+     */
+    public function deleteUser($email)
     {
+        $user = $this->findUser($email);
+        $request = new UsersRequest($this->config, $this->azureClient, 'DELETE', [], [], null,
+            null, $user->getObjectId());
+        $request->launch();
+        return true;
+    }
 
+    /**
+     * @param string $email
+     * @return User
+     * @throws WakupException
+     */
+    public function findUser(string $email) : AzureUser
+    {
+        $params = ['$filter' => "signInNames/any(x:x/value eq '{$email}')"];
+        $request = new UsersRequest($this->config, $this->azureClient, 'GET', [], $params, null,
+            AzureUser::class);
+        return $request->launch()[0];
     }
 
 

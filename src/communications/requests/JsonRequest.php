@@ -90,7 +90,7 @@ abstract class JsonRequest implements Request
     /**
      * @return mixed
      */
-    public function getBodyContent() : string
+    public function getBodyContent() : ?string
     {
         return $this->bodyContent;
     }

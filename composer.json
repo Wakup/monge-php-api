@@ -19,7 +19,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Wakup\\": ["src/", "src/models/monge/", "src/models/products/","src/models/azure/","src/communications/"],
+            "Wakup\\": ["src/",
+                "src/models/monge/",
+                "src/models/products/",
+                "src/models/azure/",
+                "src/communications/"],
             "Wakup\\Requests\\": [
                 "src/communications/requests",
                 "src/communications/requests/wakup",
