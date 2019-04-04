@@ -49,7 +49,7 @@ class LoginRequest extends JsonRequest
             // Check if error is produced by invalid credentials
             if ($response->getStatusCode() == 400) {
                 $jsonBody = json_decode($response->getBody()->__toString());
-                if ($jsonBody->error == 'access_denied') {
+                if (property_exists($jsonBody, 'error') && $jsonBody->error == 'access_denied') {
                     return false;
                 }
             }
