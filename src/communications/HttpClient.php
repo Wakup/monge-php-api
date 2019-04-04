@@ -23,7 +23,7 @@ class HttpClient
     /**
      * @var \GuzzleHttp\Client
      */
-    var $wakupClient;
+    var $defaultClient;
 
     /**
      * @var \GuzzleHttp\Client
@@ -46,7 +46,7 @@ class HttpClient
     public function __construct()
     {
         $this->config = $this->getConfig();
-        $this->wakupClient = new \GuzzleHttp\Client();
+        $this->defaultClient = new \GuzzleHttp\Client();
         $this->mongeClient =  $this->getOauthClient($this->config->mongeOauthConfig);
         $this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
     }
@@ -70,7 +70,10 @@ class HttpClient
                 '5043a039-d6c0-4975-b02b-10733872b40b',
                 'xIMFrQfwaiyxmUXCoZUGk1Tn5SQqP4YT2qqTEPQH5ME',
                 'https://graph.windows.net'
-            ));
+            ),
+            'https://grupomongetvdev.b2clogin.com/grupomongetvdev.onmicrosoft.com/oauth2/v2.0/token',
+            '532ada02-78e6-40f5-8075-10d5d671bb1a'
+            );
     }
 
     private function getOauthClient(OauthConfig $config) : \GuzzleHttp\Client

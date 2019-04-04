@@ -160,4 +160,16 @@ final class ClientTest extends TestCase
         $this->assertIsBool($result);
     }
 
+    public function testCorrectLogin() : void
+    {
+        $result = static::getClient()->login('testcasesUser@gmail.com', 'P@ssword!');
+        $this->assertTrue($result);
+    }
+
+    public function testIncorrectLogin() : void
+    {
+        $result = static::getClient()->login('testcasesUser@gmail.com', 'invalid-pass');
+        $this->assertFalse($result);
+    }
+
 }

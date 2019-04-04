@@ -14,12 +14,12 @@ class OauthConfig
 
     /**
      * OauthConfig constructor.
-     * @param $tenant
-     * @param $clientId
-     * @param $clientSecret
-     * @param $resource
+     * @param $tenant string
+     * @param $clientId string
+     * @param $clientSecret string
+     * @param $resource string
      */
-    public function __construct($tenant, $clientId, $clientSecret, $resource)
+    public function __construct(string $tenant, string $clientId, ?string $clientSecret=null, ?string $resource=null)
     {
         $this->tenant = $tenant;
         $this->clientId = $clientId;

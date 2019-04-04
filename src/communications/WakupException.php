@@ -18,7 +18,7 @@ class WakupException extends \Exception
      * WakupException constructor.
      * @param $baseException
      */
-    public function __construct(\Exception $baseException)
+    public function __construct($baseException)
     {
         parent::__construct($baseException.$this->getMessage());
         $this->baseException = $baseException;

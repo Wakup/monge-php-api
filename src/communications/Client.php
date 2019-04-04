@@ -9,6 +9,7 @@
 namespace Wakup;
 
 
+use Wakup\Requests\LoginRequest;
 use Wakup\Requests\MongeRequest;
 use Wakup\Requests\ProcessOrderRequest;
 use Wakup\Requests\WakupRequest;
@@ -18,19 +19,34 @@ class Client extends HttpClient
     // User session requests
     // ----------------------//
 
-    public function isValidPassword(string $username, string $password) : bool
+    /**
+     * Makes a login attempt with given credentials and returns true if there is a match with email and password and
+     * false if it is incorrect
+     *
+     * @param string $email User login email
+     * @param string $password User password
+     * @return bool Returns true if login is successful
+     * @throws WakupException
+     */
+    public function login(string $email, string $password) : bool
+    {
+        $request = new LoginRequest($this->config, $this->defaultClient, $email, $password);
+        return $request->launch();
+    }
+
+    public function register(string $email, string $password) : User
     {
         return true;
     }
 
-    public function register(string $username, string $email, string $password)
+    public function resetPassword(string $email, string $newPassword)
     {
         return true;
     }
 
-    public function resetPassword(string $username, string $newPassword)
+    public function findUser(string $email) : User
     {
-        return true;
+
     }
 
 
@@ -47,7 +63,7 @@ class Client extends HttpClient
      */
     public function getPaginatedAttributes($page = 0, $perPage = 25) : PaginatedAttributes
     {
-        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedAttributes(),
+        $request = new WakupRequest($this->config, $this->defaultClient, new PaginatedAttributes(),
             'catalog/attributes', [], $page, $perPage);
         return $request->launch();
     }
@@ -62,7 +78,7 @@ class Client extends HttpClient
      */
     public function getPaginatedCategories($page = 0, $perPage = 25) : PaginatedCategories
     {
-        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedCategories(),
+        $request = new WakupRequest($this->config, $this->defaultClient, new PaginatedCategories(),
             'catalog/categories', [], $page, $perPage);
         return $request->launch();
     }
@@ -80,7 +96,7 @@ class Client extends HttpClient
     public function getPaginatedProducts(\DateTime $lastUpdate = null, $page = 0, $perPage = 25) : PaginatedProducts
     {
         $params = $lastUpdate != null ? ['lastUpdate' => $lastUpdate->format(\DateTime::ATOM)] : [];
-        $request = new WakupRequest($this->config, $this->wakupClient, new PaginatedProducts(),
+        $request = new WakupRequest($this->config, $this->defaultClient, new PaginatedProducts(),
             'catalog/products', $params, $page, $perPage);
         return $request->launch();
     }

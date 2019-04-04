@@ -121,10 +121,19 @@ abstract class JsonRequest implements Request
             $obj = json_decode($response->getBody());
             return $this->onResponseProcess($obj);
         } catch (\JsonMapper_Exception $e) {
-            throw new WakupException($e);
+            return $this->onRequestException($e);
         } catch (GuzzleException $e) {
-            throw new WakupException($e);
+            return $this->onRequestException($e);
         }
+    }
+
+    /**
+     * @param \Exception $e
+     * @throws WakupException
+     */
+    function onRequestException(\Exception $e)
+    {
+        throw new WakupException($e);
     }
 
     /**
