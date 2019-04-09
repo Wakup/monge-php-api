@@ -21,7 +21,7 @@
         "psr-4": {
             "Wakup\\": ["src/",
                 "src/models/monge/",
-                "src/models/products/",
+                "src/models/wakup/",
                 "src/models/azure/",
                 "src/communications/"],
             "Wakup\\Requests\\": [

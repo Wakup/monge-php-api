@@ -163,6 +163,24 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    public function getNearestStores(float $latitude, float $longitude, $page = 0, $perPage = 25) : PaginatedStores
+    {
+        // TODO make service call when its ready
+        $pagination = new PaginatedStores();
+        $pagination->setPage($page);
+        $pagination->setPerPage($perPage);
+        $pagination->setTotalPages(1);
+        $pagination->setHasMore(false);
+        $pagination->setStores([
+            new Store('C002', '1001', 'Tienda 1', 'Dirección tienda 1', 9.93, -84.21),
+            new Store('C003', '1002', 'Tienda 2', 'Dirección tienda 2', 9.7, -84.51),
+            new Store('C004', '1003', 'Tienda 3', 'Dirección tienda 3', 9.6, -84.71),
+            new Store('C005', '1004', 'Tienda 4', 'Dirección tienda 4', 9.3, -84.25),
+            new Store('C006', '1005', 'Tienda 5', 'Dirección tienda 5', 9.99, -83.91),
+        ]);
+        return $pagination;
+    }
+
     // MONGE Requests
     // ---------------//
 
@@ -336,6 +354,13 @@ class Client extends HttpClient
         return true;
     }
 
+    /**
+     * Process and generates invoice for given order
+     *
+     * @param Order $order Container for order information
+     * @return bool Returns true if process was successful
+     * @throws WakupException
+     */
     public function processOrder(Order $order)
     {
         $request = new ProcessOrderRequest($this->config, $this->mongeClient, $order);
