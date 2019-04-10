@@ -11,7 +11,26 @@ namespace Wakup;
 
 class ProductInfo
 {
-    private $name, $description, $short_description, $category, $active, $properties;
+    private $name, $category, $active, $properties;
+    // Static properties
+    /**
+     * @var $staticProperties array
+     */
+    private $staticProperties;
+    const PROP_SHORT_DESCRIPTION = 'short_description';
+    const PROP_DESCRIPTION = 'description';
+    const PROP_WARRANTY = 'has-warranty-plans';
+    const PROP_RELATED_PRODUCTS = 'related-products';
+    const PROP_REQUIRED_PRODUCTS = 'required-products';
+    const PROP_VISIBLE_INDIVIDUALLY = 'visible-individually';
+    const STATIC_PROPERTIES = [
+        self::PROP_SHORT_DESCRIPTION,
+        self::PROP_DESCRIPTION,
+        self::PROP_WARRANTY,
+        self::PROP_RELATED_PRODUCTS,
+        self::PROP_REQUIRED_PRODUCTS,
+        self::PROP_VISIBLE_INDIVIDUALLY
+    ];
 
     /**
      * @return string Product display name
@@ -75,11 +94,17 @@ class ProductInfo
     public function setProperties(array $properties): void
     {
         // Extract static properties
+        $this->staticProperties = array();
         if ($properties != null) {
-            $this->short_description = $properties['short_description']; unset($properties['short_description']);
-            $this->description = $properties['description']; unset($properties['description']);
+            foreach (self::STATIC_PROPERTIES as $staticKey) {
+                $value = null;
+                if (array_key_exists($staticKey, $properties)) {
+                    $value = $properties[$staticKey];
+                    unset($properties[$staticKey]);
+                }
+                $this->staticProperties[$staticKey] = $value;
+            }
         }
-        // Remove static values from properties array
         $this->properties = $properties;
     }
 
@@ -90,7 +115,7 @@ class ProductInfo
      */
     public function getDescription() : ?string
     {
-        return $this->description;
+        return $this->staticProperties[self::PROP_DESCRIPTION];
     }
 
     /**
@@ -98,7 +123,7 @@ class ProductInfo
      */
     public function getShortDescription() : ?string
     {
-        return $this->short_description;
+        return $this->staticProperties[self::PROP_SHORT_DESCRIPTION];
     }
 
     /**
@@ -106,8 +131,15 @@ class ProductInfo
      */
     public function getRequiredProducts() : array
     {
-        # TODO Extract required products from static properties
-        return [];
+        return $this->staticProperties[self::PROP_REQUIRED_PRODUCTS] ?? [];
+    }
+
+    /**
+     * @return array List of SKUs of products related to current
+     */
+    public function getRelatedProducts() : array
+    {
+        return $this->staticProperties[self::PROP_RELATED_PRODUCTS] ?? [];
     }
 
     /**
@@ -116,8 +148,7 @@ class ProductInfo
      */
     public function isVisibleIndividually() : bool
     {
-        # TODO Extract required products from static properties
-        return true;
+        return $this->staticProperties[self::PROP_VISIBLE_INDIVIDUALLY] ?? true;
     }
 
     /**
@@ -125,8 +156,7 @@ class ProductInfo
      */
     public function hasWarrantyPlans() : bool
     {
-        # TODO Extract required products from static properties
-        return true;
+        return $this->staticProperties[self::PROP_WARRANTY] ?? true;
     }
 
 
