@@ -119,11 +119,23 @@ class ProductInfo
     }
 
     /**
-     * @return string Product short description
+     * @return string[] Obtains the list of elements that make up the short description
+     */
+    public function getShortDescriptionItems() : array
+    {
+        return array_filter(explode('*', $this->staticProperties[self::PROP_SHORT_DESCRIPTION] ?? ''));
+    }
+
+    /**
+     * @return string Product short description as result of joinint shortDescriptionItems
      */
     public function getShortDescription() : ?string
     {
-        return $this->staticProperties[self::PROP_SHORT_DESCRIPTION];
+        $value = "";
+        foreach ($this->getShortDescriptionItems() as $hit) {
+            $value .= "- {$hit}<br/>";
+        }
+        return $value;
     }
 
     /**
@@ -156,7 +168,7 @@ class ProductInfo
      */
     public function hasWarrantyPlans() : bool
     {
-        return $this->staticProperties[self::PROP_WARRANTY] ?? true;
+        return $this->staticProperties[self::PROP_WARRANTY] ?? false;
     }
 
 

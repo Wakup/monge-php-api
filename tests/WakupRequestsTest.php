@@ -39,9 +39,7 @@ final class WakupRequestsTest extends TestCase
 
     public function testGetWakupPaginatedProductsValue() : void
     {
-        $lastUpdate = new DateTime();
-        $lastUpdate->modify('-1 hour');
-        $pagination = static::getClient()->getPaginatedProducts($lastUpdate);
+        $pagination = static::getClient()->getPaginatedProducts();
         $this->assertInstanceOf(\Wakup\PaginatedProducts::class, $pagination);
         foreach ($pagination->getProducts() as $product) {
             $this->assertInstanceOf(\Wakup\Product::class, $product);
@@ -51,7 +49,8 @@ final class WakupRequestsTest extends TestCase
                 $this->assertInstanceOf(\Wakup\ProductInfo::class, $info);
                 $this->assertIsString($info->getName());
                 #$this->assertIsString($info->getDescription());
-                #$this->assertIsString($info->getShortDescription());
+                $this->assertIsString($info->getShortDescription());
+                $this->assertIsArray($info->getShortDescriptionItems());
                 $this->assertIsString($info->getCategory());
                 $this->assertIsArray($info->getRelatedProducts());
                 $this->assertIsArray($info->getRequiredProducts());
