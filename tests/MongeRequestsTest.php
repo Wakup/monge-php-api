@@ -86,13 +86,29 @@ final class MongeRequestsTest extends TestCase
         $stores = ['C212', 'C002'];
         $results = static::getClient()->getStoresStock($stores, $cart);
         foreach ($results as $item) {
-            $this->assertInstanceOf(\Wakup\StoreStock::class, $item);
+            $this->assertInstanceOf(\Wakup\StoreIdStock::class, $item);
             $this->assertIsString($item->getStoreId());
             $this->assertIsInt($item->getWarehouseId());
             $this->assertIsArray($item->getItems());
-            foreach ($cart->getProducts() as $product) {
-                // Ensure that requested products are returned
-                $this->assertArrayHasKey($product->getSku(), $item->getItems());
+            foreach ($item->getItems() as $skuStock) {
+                $this->assertIsString($skuStock->getSku());
+                $this->assertIsInt($skuStock->getStock());
+            }
+        }
+    }
+
+    public function testGetNearestStoresStock() : void
+    {
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
+        $results = static::getClient()->getNearestStoresStock($cart, 9, -82);
+        $this->assertIsArray($results);
+        foreach ($results as $storeStock) {
+            $this->assertInstanceOf(\Wakup\StoreStock::class, $storeStock);
+            $this->assertInstanceOf(\Wakup\Store::class, $storeStock->getStore());
+            $this->assertIsArray($storeStock->getItems());
+            foreach ($storeStock->getItems() as $skuStock) {
+                $this->assertIsString($skuStock->getSku());
+                $this->assertIsInt($skuStock->getStock());
             }
         }
     }

@@ -163,6 +163,14 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    /**
+     * Returns the list of N stores near to the given location
+     * @param float $latitude Latitude component for search location coordinates
+     * @param float $longitude Longitude component for search location coordinates
+     * @param int $page Page to request. First page is 0
+     * @param int $perPage Number of results to obtain per request. Default is 25.
+     * @return PaginatedStores
+     */
     public function getNearestStores(float $latitude, float $longitude, $page = 0, $perPage = 25) : PaginatedStores
     {
         // TODO make service call when its ready
@@ -179,6 +187,33 @@ class Client extends HttpClient
             new Store('C006', '1005', 'Tienda 5', 'Dirección tienda 5', 9.99, -83.91),
         ]);
         return $pagination;
+    }
+
+    /**
+     * Obtains the stock available for the given cart products in the stores nearest to the given location
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
+     * @param float $latitude Latitude component for search location coordinates
+     * @param float $longitude Longitude component for search location coordinates
+     * @param int $storeCount Max store count to obtain
+     * @return StoreStock[] List of objects containing available stock for requested products in nearest stores
+     * @throws WakupException
+     */
+    public function getNearestStoresStock(Cart $cart, float $latitude, float $longitude, $storeCount = 10) : array
+    {
+        $nearStores = $this->getNearestStores($latitude, $longitude, 0, $storeCount)->getStores();
+        $storeIds = [];
+        foreach ($nearStores as $store) {
+            $storeIds[$store->getSku()] = $store;
+        }
+        $storesStock = $this->getStoresStock(array_keys($storeIds), $cart);
+        $result = [];
+        foreach ($storesStock as $storeStock) {
+            $store = $storeIds[$storeStock->getStoreId()];
+            $store->setWarehouseId($storeStock->getWarehouseId());
+            $stock = new StoreStock($store, $storeStock->getItems());
+            array_push($result, $stock);
+        }
+        return $result;
     }
 
     // MONGE Requests
@@ -294,7 +329,7 @@ class Client extends HttpClient
      *
      * @param array $stores Array of store identifiers to obtain stock from
      * @param Cart $cart Wrapper object for products added to the cart by the logged user
-     * @return StoreStock[] List of stock availability for each requested store
+     * @return StoreIdStock[] List of stock availability for each requested store
      * @throws WakupException
      */
     public function getStoresStock(array $stores, Cart $cart) : array
@@ -308,7 +343,7 @@ class Client extends HttpClient
             'sistema' => 'Ecommerce',
             'articulos' => $items
         ];
-        $request = new MongeRequest($this->config, $this->mongeClient, StoreStock::class,
+        $request = new MongeRequest($this->config, $this->mongeClient, StoreIdStock::class,
             'Inventario/ConsultaInventario', 93, $params);
         return $request->launch();
     }

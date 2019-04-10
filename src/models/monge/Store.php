@@ -12,7 +12,7 @@ namespace Wakup;
 class Store
 {
 
-    private $id, $sku, $warehouseId, $name, $address, $latitude, $longitude;
+    private $sku, $warehouseId, $name, $address, $latitude, $longitude;
 
     /**
      * Store constructor.
@@ -45,6 +45,14 @@ class Store
      * @param string $sku External store identifier / Sku
      */
     public function setSku(string $sku): void
+    {
+        $this->sku = $sku;
+    }
+
+    /**
+     * @param string $sku External store identifier / Sku
+     */
+    public function setStoreId(string $sku): void
     {
         $this->sku = $sku;
     }

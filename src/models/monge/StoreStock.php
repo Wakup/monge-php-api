@@ -11,42 +11,37 @@ namespace Wakup;
 
 class StoreStock
 {
-    private $storeId, $warehouseId, $items;
+    private $store, $items;
 
     /**
-     * @return string Store identifier
+     * StoreStock constructor.
+     * @param $store Store Store linked to the products stock
+     * @param $items array Associative array where the key is the product SKU and the value represents the stock count
      */
-    public function getStoreId(): string
+    public function __construct($store, $items)
     {
-        return $this->storeId;
+        $this->store = $store;
+        $this->items = $items;
     }
 
     /**
-     * @param string $storeId Store identifier
+     * @return Store Store linked to the products stock
      */
-    public function setTienda(string $storeId): void
+    public function getStore(): Store
     {
-        $this->storeId = $storeId;
+        return $this->store;
     }
 
     /**
-     * @return int Identifier for store warehouse
+     * @param Store $store Store linked to the products stock
      */
-    public function getWarehouseId(): int
+    public function setStore(Store $store): void
     {
-        return $this->warehouseId;
+        $this->store = $store;
     }
 
     /**
-     * @param int $warehouseId Identifier for store warehouse
-     */
-    public function setBodega(int $warehouseId): void
-    {
-        $this->warehouseId = $warehouseId;
-    }
-
-    /**
-     * @return array Associative array where the key is the product SKU and the value represents the stock count
+     * @return SkuStock[] List of stock info for requested products
      */
     public function getItems(): array
     {
@@ -54,24 +49,28 @@ class StoreStock
     }
 
     /**
-     * @param array $items Associative array where the key is the product SKU and the value represents the stock count
+     * @param SkuStock[] $items List of stock info for requested products
      */
     public function setItems(array $items): void
     {
         $this->items = $items;
     }
 
-    public function setArticulos(array $itemArray)
+    /**
+     * Obtains the stock count of the product with the given SKU
+     * @param string $sku SKU of the product to obtain stock from
+     * @return int|null Stock count for the given SKU or null if product is not found
+     */
+    public function getSkuStock(string $sku) : ?int
     {
-        $this->items = [];
-        foreach ($itemArray as $item) {
-            $this->items[$item->sku] = $item->cantidad;
+        $count = null;
+        foreach ($this->getItems() as $skuItem) {
+            if ($skuItem->getSku() == $sku) {
+                $count = $skuItem->getStock();
+            }
         }
-        return $this->items;
+        return $count;
     }
-
-
-
 
 
 }
