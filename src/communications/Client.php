@@ -170,23 +170,18 @@ class Client extends HttpClient
      * @param int $page Page to request. First page is 0
      * @param int $perPage Number of results to obtain per request. Default is 25.
      * @return PaginatedStores
+     * @throws WakupException
      */
     public function getNearestStores(float $latitude, float $longitude, $page = 0, $perPage = 25) : PaginatedStores
     {
-        // TODO make service call when its ready
-        $pagination = new PaginatedStores();
-        $pagination->setPage($page);
-        $pagination->setPerPage($perPage);
-        $pagination->setTotalPages(1);
-        $pagination->setHasMore(false);
-        $pagination->setStores([
-            new Store('C002', '1001', 'Tienda 1', 'Dirección tienda 1', 9.93, -84.21),
-            new Store('C003', '1002', 'Tienda 2', 'Dirección tienda 2', 9.7, -84.51),
-            new Store('C004', '1003', 'Tienda 3', 'Dirección tienda 3', 9.6, -84.71),
-            new Store('C005', '1004', 'Tienda 4', 'Dirección tienda 4', 9.3, -84.25),
-            new Store('C006', '1005', 'Tienda 5', 'Dirección tienda 5', 9.99, -83.91),
-        ]);
-        return $pagination;
+        $params = [
+            'companyId' => $this->config->wakupCompanyId,
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        ];
+        $request = new WakupRequest($this->config, $this->defaultClient, new PaginatedStores(),
+            'catalog/stores', $params, $page, $perPage);
+        return $request->launch();
     }
 
     /**
@@ -213,6 +208,11 @@ class Client extends HttpClient
             $stock = new StoreStock($store, $storeStock->getItems());
             array_push($result, $stock);
         }
+        # Sort by distance
+        usort($result, function(StoreStock $a, StoreStock $b)
+        {
+            return $a->getStore()->getDistanceInMiles() > $b->getStore()->getDistanceInMiles();
+        });
         return $result;
     }
 

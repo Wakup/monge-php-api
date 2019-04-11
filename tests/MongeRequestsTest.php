@@ -102,14 +102,23 @@ final class MongeRequestsTest extends TestCase
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
         $results = static::getClient()->getNearestStoresStock($cart, 9, -82);
         $this->assertIsArray($results);
+        $lastDistance = 0;
         foreach ($results as $storeStock) {
             $this->assertInstanceOf(\Wakup\StoreStock::class, $storeStock);
-            $this->assertInstanceOf(\Wakup\Store::class, $storeStock->getStore());
             $this->assertIsArray($storeStock->getItems());
             foreach ($storeStock->getItems() as $skuStock) {
                 $this->assertIsString($skuStock->getSku());
                 $this->assertIsInt($skuStock->getStock());
             }
+            # Validate store
+            $store = $storeStock->getStore();
+            $this->assertInstanceOf(\Wakup\Store::class, $store);
+            # Warehouse ID should be set
+            $this->assertIsString($storeStock->getStore()->getWarehouseId());
+            # Should be ordered by distance
+            $this->assertGreaterThanOrEqual($lastDistance, $store->getDistanceInMiles(),
+                'Stores should be ordered by distance');
+            $lastDistance = $store->getDistanceInMiles();
         }
     }
 

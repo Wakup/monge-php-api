@@ -12,7 +12,7 @@ namespace Wakup;
 class Store
 {
 
-    private $sku, $warehouseId, $name, $address, $latitude, $longitude;
+    private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance;
 
     /**
      * Store constructor.
@@ -22,8 +22,10 @@ class Store
      * @param $address string Store physical address
      * @param $latitude float Latitude component of store location coordinates
      * @param $longitude float Longitude component of store location coordinates
+     * @param $distance float Distance in miles to search point, if any
      */
-    public function __construct(string $sku, ?string $warehouseId, ?string $name, string $address, float $latitude, float $longitude)
+    public function __construct(string $sku, ?string $warehouseId, ?string $name, string $address,
+                                float $latitude, float $longitude, float $distance = 0)
     {
         $this->sku = $sku;
         $this->warehouseId = $warehouseId;
@@ -31,6 +33,7 @@ class Store
         $this->address = $address;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
+        $this->distance = $distance;
     }
 
     /**
@@ -122,6 +125,14 @@ class Store
     }
 
     /**
+     * @param float $latitude Latitude component of store location coordinates
+     */
+    public function setLat(float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+
+    /**
      * @return float Longitude component of store location coordinates
      */
     public function getLongitude(): float
@@ -137,5 +148,36 @@ class Store
         $this->longitude = $longitude;
     }
 
+    /**
+     * @param float $longitude Longitude component of store location coordinates
+     */
+    public function setLong(float $longitude): void
+    {
+        $this->longitude = $longitude;
+    }
+
+    /**
+     * @return float Distance in miles to search point, if any
+     */
+    public function getDistanceInMiles(): float
+    {
+        return $this->distance;
+    }
+
+    /**
+     * @param float $distance Distance in miles to search point, if any
+     */
+    public function setDistance(float $distance): void
+    {
+        $this->distance = $distance;
+    }
+
+    /**
+     * @return float Distance in kilometers to search point, if any
+     */
+    public function getDistanceInKms(): float
+    {
+        return $this->distance * 1.609344;
+    }
 
 }

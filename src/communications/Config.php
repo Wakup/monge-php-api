@@ -12,7 +12,7 @@ namespace Wakup;
 class Config
 {
     var $azureLoginUrl, $azureLoginClientId,
-        $wakupEndpoint, $wakupApiToken,
+        $wakupEndpoint, $wakupApiToken, $wakupCompanyId,
         $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeChannelCode, $mongeCurrencyId;
 
     /**
@@ -29,6 +29,7 @@ class Config
      * Config constructor.
      * @param $wakupEndpoint
      * @param $wakupApiToken
+     * @param $wakupCompanyId
      * @param $mongeEndpoint
      * @param $mongeCountryCode
      * @param $mongeShopCode
@@ -39,13 +40,14 @@ class Config
      * @param string $azureLoginUrl
      * @param string $azureLoginClientId
      */
-    public function __construct($wakupEndpoint, $wakupApiToken,
+    public function __construct(string $wakupEndpoint, string $wakupApiToken, int $wakupCompanyId,
                                 $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeChannelCode, $mongeCurrencyId,
                                 OauthConfig $mongeOauthConfig, OauthConfig $azureOauthConfig,
                                 string $azureLoginUrl, string $azureLoginClientId)
     {
         $this->wakupEndpoint = $wakupEndpoint;
         $this->wakupApiToken = $wakupApiToken;
+        $this->wakupCompanyId = $wakupCompanyId;
         $this->mongeEndpoint = $mongeEndpoint;
         $this->mongeCountryCode = $mongeCountryCode;
         $this->mongeShopCode = $mongeShopCode;

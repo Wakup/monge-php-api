@@ -65,14 +65,21 @@ final class WakupRequestsTest extends TestCase
     {
         $pagination = static::getClient()->getNearestStores(9, -82, 0, 10);
         $this->assertInstanceOf(\Wakup\PaginatedStores::class, $pagination);
+        $lastDistance = 0;
         foreach ($pagination->getStores() as $store) {
             $this->assertInstanceOf(\Wakup\Store::class, $store);
             $this->assertIsString($store->getSku());
-            $this->assertIsString($store->getWarehouseId());
             $this->assertIsString($store->getName());
             $this->assertIsString($store->getAddress());
             $this->assertIsFloat($store->getLatitude());
             $this->assertIsFloat($store->getLongitude());
+            $this->assertIsFloat($store->getDistanceInKms());
+            $this->assertIsFloat($store->getDistanceInMiles());
+            # Warehouse ID should be empty at this point
+            $this->assertNull($store->getWarehouseId());
+            # Should be ordered by distance
+            $this->assertGreaterThanOrEqual($lastDistance, $store->getDistanceInMiles());
+            $lastDistance = $store->getDistanceInMiles();
         }
     }
 

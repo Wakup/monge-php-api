@@ -57,6 +57,7 @@ class HttpClient
         return new Config(
             'http://ecommerce.wakup.net:9000/',
             '66145878-9b0f-415f-ac1b-f10c6306face',
+            335,
             'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/', 'CR',
             212, 260, 188,
             new OauthConfig(
