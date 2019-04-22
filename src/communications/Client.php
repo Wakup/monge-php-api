@@ -348,45 +348,90 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    const ORDER_TYPE_CENTRAL = 'central';
+    const ORDER_TYPE_STORE = 'store';
+
     /**
-     * Makes the reservation of the products in the cart before the payment process of the order
+     * Makes the reservation of the products in the cart before the payment process of the order.
+     * There are two types of reservation for the different shopping options: from central stock or from store stock.
      *
-     * @param string $storeId Identifier of the store in which the reservation is done
+     * @param string $orderType Value from ORDER_TYPE_ constants to define the stock origin for order
+     * @param Store $store Store in which the reservation is done. For central reservations, it defines the collection store
      * @param Cart $cart Wrapper object for products added to the cart by the logged user
      * @return string Reservation identifier. Required to later cancel it.
      * @throws WakupException
      */
-    public function reserveOrderStock(string $storeId, int $warehouseId, Cart $cart) : string
+    public function reserveOrderStock(string $orderType, Store $store, Cart $cart) : string
     {
         $items = [];
         foreach ($cart->getProducts() as $cartProduct) {
-            array_push($items, [
-                    'sku' => $cartProduct->getSku(),
-                    'cantidad' => $cartProduct->getCount(),
-                    'tienda' => $storeId,
-                    'bodegaOrigen' => $warehouseId,
-                    'pais' => $this->config->mongeCountryCode]
-            );
+            switch ($orderType) {
+                case self::ORDER_TYPE_STORE:
+                    array_push($items, [
+                            'sku' => $cartProduct->getSku(),
+                            'cantidad' => $cartProduct->getCount(),
+                            'tienda' => $store->getSku(),
+                            'bodegaOrigen' => $store->getWarehouseId(),
+                            'pais' => $this->config->mongeCountryCode]
+                    );
+                    break;
+                case self::ORDER_TYPE_CENTRAL:
+                    array_push($items, [
+                            'sku' => $cartProduct->getSku(),
+                            'cantidad' => $cartProduct->getCount(),
+                            'tienda' => $store->getSku(),
+                            'bodega' => $this->config->mongeWarehouseCode,
+                            'pais' => $this->config->mongeCountryCode]
+                    );
+                    break;
+                default:
+                    throw new WakupException(new \Exception('Unsupported order type'));
+            }
         }
-        $request = new MongeRequest($this->config, $this->mongeClient, '',
-            'Inventario/ReservaInventario', 93, $items, false);
-        return $request->launch();
+        switch ($orderType) {
+            case self::ORDER_TYPE_STORE:
+                $request = new MongeRequest($this->config, $this->mongeClient, '',
+                    'Inventario/ReservaInventario', 93, $items, false);
+                return $request->launch();
+                break;
+            case self::ORDER_TYPE_CENTRAL:
+                $request = new MongeRequest($this->config, $this->mongeClient, '',
+                    'Inventario/PedidosPorTraslado', 93, $items, false);
+                return $request->launch();
+                break;
+            default:
+                throw new WakupException(new \Exception('Unsupported order type'));
+        }
     }
 
     /**
      * Cancels a previously made store stock reservation
      *
+     * @param string $orderType Value from ORDER_TYPE_ constants to define the stock origin for order
      * @param string $reservationId Id of the reservation
      * @return bool Returns true if request is successful
      * @throws WakupException
      */
-    public function cancelOrderStockReservation(string $reservationId) : bool
+    public function cancelOrderStockReservation(string $orderType, string $reservationId) : bool
     {
-        $params = ['idReserva' => $reservationId, 'codigoUsuario' => 'TiendaVirtual'];
-        $request = new MongeRequest($this->config, $this->mongeClient, null,
-            'Inventario/ReversaReservaInventario', 93, $params);
-        $request->launch();
-        return true;
+        switch ($orderType) {
+            case self::ORDER_TYPE_STORE:
+                $params = ['idReserva' => $reservationId, 'codigoUsuario' => 'TiendaVirtual'];
+                $request = new MongeRequest($this->config, $this->mongeClient, null,
+                    'Inventario/ReversaReservaInventario', 93, $params);
+                $request->launch();
+                return true;
+                break;
+            case self::ORDER_TYPE_CENTRAL:
+                $params = ['numeroDocumento' => $reservationId];
+                $request = new MongeRequest($this->config, $this->mongeClient, null,
+                    'Inventario/AnulacionDePedidoTraslado', 93, $params);
+                $request->launch();
+                return true;
+                break;
+            default:
+                throw new WakupException(new \Exception('Unsupported order type'));
+        }
     }
 
     /**

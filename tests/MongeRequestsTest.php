@@ -124,17 +124,35 @@ final class MongeRequestsTest extends TestCase
 
     public function testReserveStoreStock() : void
     {
+        $orderType = \Wakup\Client::ORDER_TYPE_STORE;
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $result = static::getClient()->reserveOrderStock('C002', 1001, $cart);
+        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
         $this->assertIsString($result);
-        $this->reservationId = $result;
     }
 
     public function testCancelStoreStockReservation() : void
     {
+        $orderType = \Wakup\Client::ORDER_TYPE_STORE;
         $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $reservationId = static::getClient()->reserveOrderStock('C002', 1001, $cart);
-        $result = static::getClient()->cancelOrderStockReservation($reservationId);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $result = static::getClient()->cancelOrderStockReservation($orderType, $reservationId);
+        $this->assertIsBool($result);
+    }
+
+    public function testReserveCentralStock() : void
+    {
+        $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
+        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $this->assertIsString($result);
+    }
+
+    public function testCancelCentralStockReservation() : void
+    {
+        $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
+        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $result = static::getClient()->cancelOrderStockReservation($orderType, $reservationId);
         $this->assertIsBool($result);
     }
 
@@ -147,8 +165,14 @@ final class MongeRequestsTest extends TestCase
                 $this->getTestUser(),
                 'order01',
                 new \Wakup\Cart([$product]),
-                new \Wakup\Store('C002', '1001', 'Shop name', 'Address', 0, 0),
+                $this->getTestStore(),
                 \Wakup\Order::PAYMENT_METHOD_CREDIT_CARD));
         $this->assertIsBool($result);
+    }
+
+    // Private helper methods
+    private function getTestStore(string $storeId = 'C002'): \Wakup\Store
+    {
+        return new \Wakup\Store($storeId, '1001', 'Shop name', 'Address', 0, 0);
     }
 }

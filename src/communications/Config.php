@@ -13,7 +13,7 @@ class Config
 {
     var $azureLoginUrl, $azureLoginClientId,
         $wakupEndpoint, $wakupApiToken, $wakupCompanyId,
-        $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeChannelCode, $mongeCurrencyId;
+        $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeWarehouseCode, $mongeChannelCode, $mongeCurrencyId;
 
     /**
      * @var OauthConfig
@@ -33,6 +33,7 @@ class Config
      * @param $mongeEndpoint
      * @param $mongeCountryCode
      * @param $mongeShopCode
+     * @param $mongeWarehouseCode
      * @param $mongeChannelCode
      * @param $mongeCurrencyId
      * @param OauthConfig $azureOauthConfig
@@ -41,7 +42,8 @@ class Config
      * @param string $azureLoginClientId
      */
     public function __construct(string $wakupEndpoint, string $wakupApiToken, int $wakupCompanyId,
-                                $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeChannelCode, $mongeCurrencyId,
+                                $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeWarehouseCode,
+                                $mongeChannelCode, $mongeCurrencyId,
                                 OauthConfig $mongeOauthConfig, OauthConfig $azureOauthConfig,
                                 string $azureLoginUrl, string $azureLoginClientId)
     {
@@ -51,6 +53,7 @@ class Config
         $this->mongeEndpoint = $mongeEndpoint;
         $this->mongeCountryCode = $mongeCountryCode;
         $this->mongeShopCode = $mongeShopCode;
+        $this->mongeWarehouseCode = $mongeWarehouseCode;
         $this->mongeChannelCode = $mongeChannelCode;
         $this->mongeCurrencyId = $mongeCurrencyId;
         $this->azureOauthConfig = $azureOauthConfig;

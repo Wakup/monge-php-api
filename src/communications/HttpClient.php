@@ -59,7 +59,7 @@ class HttpClient
             '66145878-9b0f-415f-ac1b-f10c6306face',
             335,
             'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/', 'CR',
-            212, 260, 188,
+            212, 8004, 260, 188,
             new OauthConfig(
                 '98048920-81ec-49aa-aa1a-1403f8889145',
                 '321eac47-bafb-4243-8b48-641a39940b20',
