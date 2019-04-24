@@ -69,7 +69,7 @@ class Client extends HttpClient
      * @return bool
      * @throws WakupException
      */
-    public function resetPassword(string $email, string $newPassword)
+    public function resetPassword(string $email, string $newPassword) : bool
     {
         $user = $this->findUser($email);
         $jsonBody = [
@@ -89,7 +89,7 @@ class Client extends HttpClient
      * @return bool
      * @throws WakupException
      */
-    public function deleteUser($email)
+    public function deleteUser(string $email) : bool
     {
         $user = $this->findUser($email);
         $request = new UsersRequest($this->config, $this->azureClient, 'DELETE', [], [], null,
@@ -378,10 +378,12 @@ class Client extends HttpClient
                 case self::ORDER_TYPE_CENTRAL:
                     array_push($items, [
                             'sku' => $cartProduct->getSku(),
-                            'cantidad' => $cartProduct->getCount(),
                             'tienda' => $store->getSku(),
                             'bodega' => $this->config->mongeWarehouseCode,
-                            'pais' => $this->config->mongeCountryCode]
+                            'cantidad' => $cartProduct->getCount(),
+                            'unidadMedida' => 'UN',
+                            'motivoPedido' => '',
+                        ]
                     );
                     break;
                 default:
@@ -397,7 +399,8 @@ class Client extends HttpClient
             case self::ORDER_TYPE_CENTRAL:
                 $request = new MongeRequest($this->config, $this->mongeClient, '',
                     'Inventario/PedidosPorTraslado', 93, $items, false);
-                return $request->launch();
+                $response = $request->launch();
+                return $response->numeroDocumentoCompras;
                 break;
             default:
                 throw new WakupException(new \Exception('Unsupported order type'));
@@ -429,6 +432,39 @@ class Client extends HttpClient
                 $request->launch();
                 return true;
                 break;
+            default:
+                throw new WakupException(new \Exception('Unsupported order type'));
+        }
+    }
+
+    public function confirmOrderStockReservation(string $orderType, string $reservationId, Cart $cart) : bool
+    {
+        switch ($orderType) {
+            case self::ORDER_TYPE_STORE:
+                return true;
+                break;
+            case self::ORDER_TYPE_CENTRAL:
+                $items = [];
+                foreach ($cart->getProducts() as $i=>$cartProduct) {
+
+                    array_push($items, [
+                            'documentoReferencia' => $reservationId,
+                            'cantidad' => $cartProduct->getCount(),
+                            'referencia' => $i,
+                            'unidadMedida' => 'UN'
+                            ]
+                    );
+                }
+                $params = [
+                    'fechaCreacion' => date(\DateTime::ATOM),
+                    'detalle' => $items
+                ];
+                $request = new MongeRequest($this->config, $this->mongeClient, null,
+                    'Inventario/CreacionDeEntregaDeSalida', 93, $params);
+                $request->launch();
+                return true;
+                break;
+
             default:
                 throw new WakupException(new \Exception('Unsupported order type'));
         }

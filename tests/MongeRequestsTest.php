@@ -72,7 +72,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetUserFinancialScenarios() : void
     {
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('135360', 21900)]);
+        $cart = $this->getTestCart(['135360']);
         $results = static::getClient()->getFinancialScenarios(145896, 302, 1, $cart);
         $this->assertIsArray($results);
         foreach ($results as $item) {
@@ -82,9 +82,8 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetStoresStock() : void
     {
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
         $stores = ['C212', 'C002'];
-        $results = static::getClient()->getStoresStock($stores, $cart);
+        $results = static::getClient()->getStoresStock($stores, $this->getTestCart());
         foreach ($results as $item) {
             $this->assertInstanceOf(\Wakup\StoreIdStock::class, $item);
             $this->assertIsString($item->getStoreId());
@@ -99,8 +98,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetNearestStoresStock() : void
     {
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $results = static::getClient()->getNearestStoresStock($cart, 9, -82);
+        $results = static::getClient()->getNearestStoresStock($this->getTestCart(), 9, -82);
         $this->assertIsArray($results);
         $lastDistance = 0;
         foreach ($results as $storeStock) {
@@ -125,16 +123,14 @@ final class MongeRequestsTest extends TestCase
     public function testReserveStoreStock() : void
     {
         $orderType = \Wakup\Client::ORDER_TYPE_STORE;
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $this->getTestCart());
         $this->assertIsString($result);
     }
 
     public function testCancelStoreStockReservation() : void
     {
         $orderType = \Wakup\Client::ORDER_TYPE_STORE;
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $this->getTestCart());
         $result = static::getClient()->cancelOrderStockReservation($orderType, $reservationId);
         $this->assertIsBool($result);
     }
@@ -142,29 +138,34 @@ final class MongeRequestsTest extends TestCase
     public function testReserveCentralStock() : void
     {
         $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $result = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $this->getTestCart());
         $this->assertIsString($result);
     }
 
     public function testCancelCentralStockReservation() : void
     {
         $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
-        $cart = new \Wakup\Cart([new \Wakup\CartProduct('100331')]);
-        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $this->getTestCart());
         $result = static::getClient()->cancelOrderStockReservation($orderType, $reservationId);
+        $this->assertIsBool($result);
+    }
+
+    public function testConfirmCentralStockReservation() : void
+    {
+        $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
+        $cart = $this->getTestCart();
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $this->getTestStore(), $cart);
+        $result = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
         $this->assertIsBool($result);
     }
 
     public function testProcessOrder() : void
     {
-        $warranty = new \Wakup\WarrantyPlan('100331', 12, 'Extragarantia', 100000);
-        $product = new \Wakup\CartProduct('100331', 10000, 13, 1, $warranty);
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $this->getTestUser(),
                 'order01',
-                new \Wakup\Cart([$product]),
+                $this->getTestCart(),
                 $this->getTestStore(),
                 \Wakup\Order::PAYMENT_METHOD_CREDIT_CARD));
         $this->assertIsBool($result);
@@ -174,5 +175,20 @@ final class MongeRequestsTest extends TestCase
     private function getTestStore(string $storeId = 'C002'): \Wakup\Store
     {
         return new \Wakup\Store($storeId, '1001', 'Shop name', 'Address', 0, 0);
+    }
+
+    private function getTestCartProduct(string $sku = '100331') : \Wakup\CartProduct
+    {
+        $warranty = new \Wakup\WarrantyPlan($sku, 12, 'Extragarantia', 100000);
+        return new \Wakup\CartProduct($sku, 10000, 13, 1, $warranty);
+    }
+
+    private function getTestCart($skuArray = ['100331']) : \Wakup\Cart
+    {
+        $products = [];
+        foreach ($skuArray as $sku) {
+            array_push($products, $this->getTestCartProduct($sku));
+        }
+        return new \Wakup\Cart($products);
     }
 }
