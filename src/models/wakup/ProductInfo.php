@@ -160,7 +160,7 @@ class ProductInfo
      */
     public function isVisibleIndividually() : bool
     {
-        return $this->staticProperties[self::PROP_VISIBLE_INDIVIDUALLY] ?? true;
+        return $this->staticProperties[self::PROP_VISIBLE_INDIVIDUALLY] ?? false;
     }
 
     /**
