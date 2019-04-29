@@ -397,8 +397,13 @@ class Client extends HttpClient
                 return $request->launch();
                 break;
             case self::ORDER_TYPE_CENTRAL:
+                $params = [
+                    'usuarioCreacion' => 'TiendaVirtual',
+                    'fechaCreacion' => date(\DateTime::ATOM),
+                    'detalle' => $items
+                ];
                 $request = new MongeRequest($this->config, $this->mongeClient, '',
-                    'Inventario/PedidosPorTraslado', 93, $items, false);
+                    'Inventario/PedidosPorTraslado', 93, $params);
                 $response = $request->launch();
                 return $response->numeroDocumentoCompras;
                 break;
