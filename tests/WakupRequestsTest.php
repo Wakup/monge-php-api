@@ -39,7 +39,7 @@ final class WakupRequestsTest extends TestCase
 
     public function testGetWakupPaginatedProductsValue() : void
     {
-        $pagination = static::getClient()->getPaginatedProducts();
+        $pagination = static::getClient()->getPaginatedProducts(null, 0, 100);
         $this->assertInstanceOf(\Wakup\PaginatedProducts::class, $pagination);
         foreach ($pagination->getProducts() as $product) {
             $this->assertInstanceOf(\Wakup\Product::class, $product);
@@ -75,6 +75,7 @@ final class WakupRequestsTest extends TestCase
             $this->assertIsFloat($store->getLongitude());
             $this->assertIsFloat($store->getDistanceInKms());
             $this->assertIsFloat($store->getDistanceInMiles());
+            $this->assertIsInt($store->getShipmentTime());
             # Warehouse ID should be empty at this point
             $this->assertNull($store->getWarehouseId());
             # Should be ordered by distance

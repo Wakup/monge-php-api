@@ -12,7 +12,7 @@ namespace Wakup;
 class Store
 {
 
-    private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance;
+    private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance, $shipmentTime;
 
     /**
      * Store constructor.
@@ -23,9 +23,10 @@ class Store
      * @param $latitude float Latitude component of store location coordinates
      * @param $longitude float Longitude component of store location coordinates
      * @param $distance float Distance in miles to search point, if any
+     * @param $shipmentTime int Shipment time in days for products to arrive from central stock to current store
      */
     public function __construct(string $sku, ?string $warehouseId, ?string $name, string $address,
-                                float $latitude, float $longitude, float $distance = 0)
+                                float $latitude, float $longitude, float $distance = 0, int $shipmentTime = 7)
     {
         $this->sku = $sku;
         $this->warehouseId = $warehouseId;
@@ -34,6 +35,7 @@ class Store
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->distance = $distance;
+        $this->shipmentTime = $shipmentTime;
     }
 
     /**
@@ -178,6 +180,22 @@ class Store
     public function getDistanceInKms(): float
     {
         return $this->distance * 1.609344;
+    }
+
+    /**
+     * @return int Shipment time in days for products to arrive from central stock to current store
+     */
+    public function getShipmentTime(): int
+    {
+        return $this->shipmentTime ?? 7;
+    }
+
+    /**
+     * @param int $shipmentTime Shipment time in days for products to arrive from central stock to current store
+     */
+    public function setShipmentTime(int $shipmentTime): void
+    {
+        $this->shipmentTime = $shipmentTime;
     }
 
 }
