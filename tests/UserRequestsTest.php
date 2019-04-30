@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 final class UserRequestsTest extends TestCase
 {
     const TEST_LOGIN_EMAIL = 'testcasesUser@gmail.com';
+    const TEST_LOGIN_NEW_EMAIL = 'secondTestCase@gmail.com';
     const TEST_LOGIN_PASSWORD = 'P@ssword!';
     const TEST_LOGIN_NEW_PASSWORD = 'NewP@ssword!';
 
@@ -29,6 +30,18 @@ final class UserRequestsTest extends TestCase
         $result = static::getClient()->register(self::TEST_LOGIN_EMAIL, self::TEST_LOGIN_PASSWORD);
         $this->assertInstanceOf(\Wakup\AzureUser::class, $result);
         $this->assertIsString($result->getObjectId());
+    }
+
+    public function testIsUserRegisteredTrue() : void
+    {
+        $result = static::getClient()->isUserRegistered(self::TEST_LOGIN_EMAIL);
+        $this->assertTrue($result);
+    }
+
+    public function testIsUserRegisteredFalse() : void
+    {
+        $result = static::getClient()->isUserRegistered(self::TEST_LOGIN_NEW_EMAIL);
+        $this->assertFalse($result);
     }
 
     public function testCorrectLogin() : void
@@ -62,9 +75,21 @@ final class UserRequestsTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testEmailChange() : void
+    {
+        $result = static::getClient()->changeEmail(self::TEST_LOGIN_EMAIL, self::TEST_LOGIN_NEW_EMAIL);
+        $this->assertTrue($result);
+    }
+
+    public function testCorrectLoginAfterEmailChange() : void
+    {
+        $result = static::getClient()->login(self::TEST_LOGIN_NEW_EMAIL, self::TEST_LOGIN_NEW_PASSWORD);
+        $this->assertTrue($result);
+    }
+
     public function testUserDelete() : void
     {
-        $result = static::getClient()->deleteUser(self::TEST_LOGIN_EMAIL);
+        $result = static::getClient()->deleteUser(self::TEST_LOGIN_NEW_EMAIL);
         $this->assertTrue($result);
     }
 

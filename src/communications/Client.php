@@ -25,7 +25,7 @@ class Client extends HttpClient
      * false if it is incorrect
      *
      * @param string $email User login email
-     * @param string $password User password
+     * @param string $password User password in plain text
      * @return bool Returns true if login is successful
      * @throws WakupException
      */
@@ -36,9 +36,11 @@ class Client extends HttpClient
     }
 
     /**
-     * @param string $email
-     * @param string $password
-     * @return User
+     * Registers a new user with the given email and password
+     *
+     * @param string $email User login email
+     * @param string $password User password in plain text
+     * @return AzureUser information of the created user
      * @throws WakupException
      */
     public function register(string $email, string $password) : AzureUser
@@ -64,14 +66,17 @@ class Client extends HttpClient
     }
 
     /**
-     * @param string $email
-     * @param string $newPassword
-     * @return bool
+     * Resets the user password
+     *
+     * @param string $email User login email
+     * @param string $newPassword New user password in plain text
+     * @return bool true if password has been successfully changed, or false if user can not be found
      * @throws WakupException
      */
     public function resetPassword(string $email, string $newPassword) : bool
     {
         $user = $this->findUser($email);
+        if ($user == null) return false;
         $jsonBody = [
             "passwordProfile" => [
                 "password" => $newPassword,
@@ -85,13 +90,42 @@ class Client extends HttpClient
     }
 
     /**
-     * @param $email
-     * @return bool
+     * Changes the sign in email of the given user
+     *
+     * @param string $email User current login email
+     * @param string $newEmail User new email address
+     * @return bool true if email has been successfully changed, or false if user can not be found
+     * @throws WakupException
+     */
+    public function changeEmail(string $email, string $newEmail) : bool
+    {
+        $user = $this->findUser($email);
+        if ($user == null) return false;
+        $jsonBody = [
+            "signInNames" => [
+                [
+                    "type" => "emailAddress",
+                    "value" => $newEmail
+                ]
+            ]
+        ];
+        $request = new UsersRequest($this->config, $this->azureClient, 'PATCH', [], [], $jsonBody,
+            null, $user->getObjectId());
+        $request->launch();
+        return true;
+    }
+
+    /**
+     * Deletes the user with given email
+     *
+     * @param $email string User login email
+     * @return bool true if user has been successfully deleted, or false if user can not be found
      * @throws WakupException
      */
     public function deleteUser(string $email) : bool
     {
         $user = $this->findUser($email);
+        if ($user == null) return false;
         $request = new UsersRequest($this->config, $this->azureClient, 'DELETE', [], [], null,
             null, $user->getObjectId());
         $request->launch();
@@ -99,16 +133,31 @@ class Client extends HttpClient
     }
 
     /**
-     * @param string $email
-     * @return User
+     * Checks if an user with the given email is already registered
+     *
+     * @param string $email User login email
+     * @return bool true if an user with the given email is already registered
      * @throws WakupException
      */
-    public function findUser(string $email) : AzureUser
+    public function isUserRegistered(string $email) : bool
+    {
+        return $this->findUser($email) != null;
+    }
+
+    /**
+     * Obtains the information of the user with given email
+     *
+     * @param string $email User login email
+     * @return AzureUser|null information of the created user. Null if the user does not exist
+     * @throws WakupException
+     */
+    public function findUser(string $email) : ?AzureUser
     {
         $params = ['$filter' => "signInNames/any(x:x/value eq '{$email}')"];
         $request = new UsersRequest($this->config, $this->azureClient, 'GET', [], $params, null,
             AzureUser::class);
-        return $request->launch()[0];
+        $users = $request->launch();
+        return empty($users) ? null : $users[0];
     }
 
 
