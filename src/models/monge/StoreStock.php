@@ -16,7 +16,7 @@ class StoreStock
     /**
      * StoreStock constructor.
      * @param $store Store Store linked to the products stock
-     * @param $items array Associative array where the key is the product SKU and the value represents the stock count
+     * @param $items SkuStock[] List of stock info for requested products
      */
     public function __construct($store, $items)
     {
