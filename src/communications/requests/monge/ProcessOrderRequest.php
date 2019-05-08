@@ -25,6 +25,7 @@ class ProcessOrderRequest extends MongeRequest
         $cart = $order->getCart();
         $store = $order->getStore();
         $user = $order->getUser();
+        $contact = $order->getContactPreferences();
         $productArray = [];
         $warrantyArray = [];
         for($i = 0; $i < count($cart->getProducts()); ++$i) {
@@ -93,12 +94,13 @@ class ProcessOrderRequest extends MongeRequest
             'MontoCompra' => $cart->getProductsPriceWithoutTax(),
             'Impuesto' => $cart->getProductsTaxAmount(),
             'TotalCompra' => $cart->getProductsPrice(),
+            'IdentificadorReserva' => $order->getReservationId(),
             // Notifications
-            'NotificarWhatsApp' => false,
-            'NotificarSms' => false,
-            'NotificarEmail' => true,
-            'EmailContacto' => 'pruebas09@gmail.com',
-            'TelefonoContacto' => '8324-8614',
+            'NotificarWhatsApp' => $contact->isNotifyWhatsapp(),
+            'NotificarSms' => $contact->isNotifySMS(),
+            'NotificarEmail' => $contact->isNotifyEmail(),
+            'EmailContacto' => $contact->getEmail(),
+            'TelefonoContacto' => $contact->getPhoneNumber(),
             // Credit info
             'Prima' => 0,
             'Plazo' => 0,
@@ -125,6 +127,8 @@ class ProcessOrderRequest extends MongeRequest
 
         $json = [
             'tienda' => "C{$config->mongeShopCode}", // Requires to prepend C to shop code
+            'fecha' => date('Y-m-d'),
+            'detalle' => json_encode($orderJson),
             'idMensaje' => 123,
             'idEstadoMensaje' => 0,
             'idTipoMensaje' => 0,
@@ -138,8 +142,6 @@ class ProcessOrderRequest extends MongeRequest
                 'idPais' => 1,
                 'codigoSAP' => "CR"
             ],
-            'fecha' => date('Y-m-d'),
-            'detalle' => json_encode($orderJson),
             'usuario' => "Ecommerce",
             'origen' => "Ecommerce",
         ];
