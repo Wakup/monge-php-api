@@ -64,7 +64,7 @@ final class MongeRequestsTest extends TestCase
         $results = static::getClient()->getFinancialPromotions(145896, ['152950','146859']);
         $this->assertIsArray($results);
         foreach ($results as $promotion) {
-            $this->assertInstanceOf(\Wakup\FinancialPromocion::class, $promotion);
+            $this->assertInstanceOf(\Wakup\FinancialPromotion::class, $promotion);
             $this->assertIsInt($promotion->getId());
             $this->assertIsString($promotion->getName());
         }
@@ -165,9 +165,11 @@ final class MongeRequestsTest extends TestCase
             new \Wakup\Order(
                 $this->getTestUser(),
                 'order01',
+                'reservation01',
                 $this->getTestCart(),
                 $this->getTestStore(),
-                \Wakup\Order::PAYMENT_METHOD_CREDIT_CARD));
+                new \Wakup\PaymentInfo(\Wakup\PaymentInfo::PAYMENT_METHOD_CREDIT_CARD)
+                ));
         $this->assertIsBool($result);
     }
 

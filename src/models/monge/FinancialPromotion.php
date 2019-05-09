@@ -9,7 +9,7 @@
 namespace Wakup;
 
 
-class FinancialPromocion
+class FinancialPromotion
 {
     private $id, $name;
 

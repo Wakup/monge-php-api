@@ -26,6 +26,9 @@ class ProcessOrderRequest extends MongeRequest
         $store = $order->getStore();
         $user = $order->getUser();
         $contact = $order->getContactPreferences();
+        $paymentInfo = $order->getPaymentInfo();
+        $scenario = $paymentInfo->getFinancialScenario();
+        $promotion = $paymentInfo->getFinancialPromotion();
         $productArray = [];
         $warrantyArray = [];
         for($i = 0; $i < count($cart->getProducts()); ++$i) {
@@ -65,7 +68,7 @@ class ProcessOrderRequest extends MongeRequest
             'OrdenPedidoFinanciacion' => null,
             'OrdenPedidoFormasPago' => [
                 [
-                    'FormaPago' => $order->getPaymentMethod(),
+                    'FormaPago' => $order->getPaymentInfo(),
                     'Monto' => $order->getCart()->getProductsPrice(),
                     'Referencia' => ''
                 ]
@@ -89,7 +92,7 @@ class ProcessOrderRequest extends MongeRequest
             'CanalVenta' => '260',
             'CodigoMoneda' => $config->mongeCurrencyId,
             'FechaProceso' => date('c'),
-            'FormaPago' => $order->getPaymentMethod(),
+            'FormaPago' => $order->getPaymentInfo(),
             'NumeroOrden' => $order->getOrderNumber(),
             'MontoCompra' => $cart->getProductsPriceWithoutTax(),
             'Impuesto' => $cart->getProductsTaxAmount(),
@@ -102,16 +105,17 @@ class ProcessOrderRequest extends MongeRequest
             'EmailContacto' => $contact->getEmail(),
             'TelefonoContacto' => $contact->getPhoneNumber(),
             // Credit info
-            'Prima' => 0,
-            'Plazo' => 0,
-            'TasaInteresNormal' => 0,
+            // TODO Check financial info
+            'Prima' => $scenario != null ? $scenario->getRate() : 0,
+            'Plazo' => $scenario != null ? $scenario->getTerm() : 0,
+            'TasaInteresNormal' => $scenario != null ? $scenario->getRate() : 0,
             'TasaInteresMora' => 0,
             'TasaImpuesto' => 0,
             'CuotaPactada' => 0,
             'Descuento' => 0,
-            'MontoFinanciado' => 0,
-            'IdPromocion' => 0, // Server crashes if null
-            'IdSegmento' => 0, // Server crashes if null
+            'MontoFinanciado' => $scenario != null ? $scenario->getFee() : 0,
+            'IdPromocion' => $promotion != null ? $promotion->getId() : 0,
+            'IdSegmento' => $scenario != null ? $scenario->getSegmentId() : 0,
             'DescuentoTotal' => null,
             'EntregaCasa' => null,
             'FechaPrimerPago' => null,

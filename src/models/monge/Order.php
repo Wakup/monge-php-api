@@ -12,10 +12,6 @@ namespace Wakup;
 class Order
 {
 
-    const PAYMENT_METHOD_PAYPAL = 'PAY';
-    const PAYMENT_METHOD_CREDIT_CARD = 'TAR';
-    const PAYMENT_METHOD_FLEXIPAGO = 'FLE';
-
     /**
      * @var
      */
@@ -35,9 +31,9 @@ class Order
      */
     private $store;
     /**
-     * @var string $paymentMethod
+     * @var string $paymentInfo
      */
-    private $paymentMethod;
+    private $paymentInfo;
 
     /**
      * @var User $user
@@ -57,16 +53,16 @@ class Order
      * @param Cart $cart Products added to cart by the user
      * @param Store $store Store that will be the pick-up point of the order
      * @param ContactPreferences $contactPreferences User contact preferences to receive order status updates
-     * @param string $paymentMethod
+     * @param PaymentInfo $paymentInfo
      */
     public function __construct(User $user, string $orderNumber, string $reservationId, Cart $cart, Store $store,
-                                ContactPreferences $contactPreferences, string $paymentMethod)
+                                ContactPreferences $contactPreferences, PaymentInfo $paymentInfo)
     {
         $this->user = $user;
         $this->orderNumber = $orderNumber;
         $this->cart = $cart;
         $this->store = $store;
-        $this->paymentMethod = $paymentMethod;
+        $this->paymentInfo = $paymentInfo;
         $this->contactPreferences = $contactPreferences;
         $this->reservationId = $reservationId;
     }
@@ -96,11 +92,11 @@ class Order
     }
 
     /**
-     * @return string
+     * @return PaymentInfo
      */
-    public function getPaymentMethod(): string
+    public function getPaymentInfo(): PaymentInfo
     {
-        return $this->paymentMethod;
+        return $this->paymentInfo;
     }
 
     /**

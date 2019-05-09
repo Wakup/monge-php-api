@@ -308,7 +308,7 @@ class Client extends HttpClient
      *
      * @param int $personId Monge internal user identifier
      * @param string[] $skuList List of product SKUs included con shopping cart
-     * @return FinancialPromocion[] List of financial promotions that applies to given user and cart
+     * @return FinancialPromotion[] List of financial promotions that applies to given user and cart
      * @throws WakupException
      */
     public function getFinancialPromotions(int $personId, array $skuList) : array
@@ -319,7 +319,7 @@ class Client extends HttpClient
             'codigoArticulos' => join(',', $skuList),
             'idPersona' => $personId
         ];
-        $request = new MongeRequest($this->config, $this->mongeClient, FinancialPromocion::class,
+        $request = new MongeRequest($this->config, $this->mongeClient, FinancialPromotion::class,
             'Cotizacion/ListarPromocion', 98, $params);
         return $request->launch();
     }
