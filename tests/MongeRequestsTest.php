@@ -193,4 +193,9 @@ final class MongeRequestsTest extends TestCase
         }
         return new \Wakup\Cart($products);
     }
+
+    private function getTestContactPreferences() : \Wakup\ContactPreferences
+    {
+        return new \Wakup\ContactPreferences(false, false, true, 'testemail@mail.com', null);
+    }
 }

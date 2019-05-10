@@ -61,7 +61,6 @@ class ProcessOrderRequest extends MongeRequest
             }
         }
 
-        #TODO separate warranty and standard product, export json serialize to request
         $orderJson = [
             'OrdenPedidoDetalle' => $productArray,
             'OrdenPedidoDetalleExtragarantia' => $warrantyArray,
@@ -85,11 +84,11 @@ class ProcessOrderRequest extends MongeRequest
                 'Correo' => $user->getEmail()
             ],
             'CodigoUsuario' => 'CLIENTE_ECOMMERCE',
+            'TipoOrden' => 'Orden.Ecommerce',
+            'TipoVenta' => 'CON',
+            'CanalVenta' => 'VEN.WEB',
             'Tienda' => "C{$config->mongeShopCode}",  // Requires to prepend C to shop code
             'TiendaRetiro' => $store->getSku(),
-            'TipoOrden' => 'Orden.Ecommerce',
-            'TipoVenta' => 'CR00005',
-            'CanalVenta' => '260',
             'CodigoMoneda' => $config->mongeCurrencyId,
             'FechaProceso' => date('c'),
             'FormaPago' => $order->getPaymentInfo(),
@@ -105,21 +104,20 @@ class ProcessOrderRequest extends MongeRequest
             'EmailContacto' => $contact->getEmail(),
             'TelefonoContacto' => $contact->getPhoneNumber(),
             // Credit info
-            // TODO Check financial info
-            'Prima' => $scenario != null ? $scenario->getRate() : 0,
-            'Plazo' => $scenario != null ? $scenario->getTerm() : 0,
-            'TasaInteresNormal' => $scenario != null ? $scenario->getRate() : 0,
-            'TasaInteresMora' => 0,
-            'TasaImpuesto' => 0,
-            'CuotaPactada' => 0,
-            'Descuento' => 0,
-            'MontoFinanciado' => $scenario != null ? $scenario->getFee() : 0,
+            'MontoFinanciado' => $scenario != null ? $cart->getProductsPrice() : 0,
             'IdPromocion' => $promotion != null ? $promotion->getId() : 0,
             'IdSegmento' => $scenario != null ? $scenario->getSegmentId() : 0,
-            'DescuentoTotal' => null,
-            'EntregaCasa' => null,
+            'Plazo' => $scenario != null ? $scenario->getTerm() : 0,
+            'TasaInteresNormal' => $scenario != null ? $scenario->getRate() : 0,
+            'CuotaPactada' => $scenario != null ? $scenario->getFee() : 0,
+            'Prima' => 0,
+            'TasaInteresMora' => 0,
+            'TasaImpuesto' => 0,
+            'Descuento' => 0,
+            'DescuentoTotal' => 0,
             'FechaPrimerPago' => null,
             // Delivery
+            'EntregaCasa' => null,
             'Pais' => null,
             'Provincia' => null,
             'Canton' => null,
@@ -130,24 +128,12 @@ class ProcessOrderRequest extends MongeRequest
         ];
 
         $json = [
+            'pais' => $config->mongeCountryCode,
             'tienda' => "C{$config->mongeShopCode}", // Requires to prepend C to shop code
             'fecha' => date('Y-m-d'),
             'detalle' => json_encode($orderJson),
-            'idMensaje' => 123,
-            'idEstadoMensaje' => 0,
-            'idTipoMensaje' => 0,
-            'idPais' => 1,
-            'detalleProceso' => [],
-            'reintentos' => 0,
             'estadoProceso' => 0,
-            'msjError' => "",
-            'pais' => [
-                'nombre' => "CR",
-                'idPais' => 1,
-                'codigoSAP' => "CR"
-            ],
-            'usuario' => "Ecommerce",
-            'origen' => "Ecommerce",
+            'origen' => "Ecommerce"
         ];
 
         parent::__construct($config, $client, null,

@@ -53,7 +53,7 @@ class Order
      * @param Cart $cart Products added to cart by the user
      * @param Store $store Store that will be the pick-up point of the order
      * @param ContactPreferences $contactPreferences User contact preferences to receive order status updates
-     * @param PaymentInfo $paymentInfo
+     * @param PaymentInfo $paymentInfo Information about the payment method selected by the user
      */
     public function __construct(User $user, string $orderNumber, string $reservationId, Cart $cart, Store $store,
                                 ContactPreferences $contactPreferences, PaymentInfo $paymentInfo)
