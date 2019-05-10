@@ -23,18 +23,32 @@ final class WakupRequestsTest extends TestCase
 
     public function testGetWakupPaginatedAttributesValue() : void
     {
-        $this->assertInstanceOf(
-            Wakup\PaginatedAttributes::class,
-            static::getClient()->getPaginatedAttributes()
-        );
+        $pagination = static::getClient()->getPaginatedAttributes();
+        $this->assertInstanceOf(Wakup\PaginatedAttributes::class, $pagination);
+        foreach ($pagination->getAttributes() as $attribute) {
+            $this->assertIsString($attribute->getIdentifier());
+            $this->assertIsString($attribute->getName());
+            $this->assertIsString($attribute->getType());
+            $this->assertIsBool($attribute->getVisible());
+            $this->assertIsBool($attribute->getFilterable());
+            $this->assertIsBool($attribute->getTranslatable());
+            $this->assertIsBool($attribute->getMandatory());
+        }
     }
 
     public function testGetWakupPaginatedCategoriesValue() : void
     {
-        $this->assertInstanceOf(
-            Wakup\PaginatedCategories::class,
-            static::getClient()->getPaginatedCategories()
-        );
+        $pagination = static::getClient()->getPaginatedCategories();
+        $this->assertInstanceOf(Wakup\PaginatedCategories::class, $pagination);
+        foreach ($pagination->getCategories() as $category) {
+            $this->assertIsString($category->getIdentifier());
+            $this->assertIsString($category->getName());
+            $this->assertIsArray($category->getAttributes());
+            foreach ($category->getAttributes() as $categoryAttribute) {
+                $this->assertIsString($categoryAttribute->getIdentifier());
+                $this->assertIsInt($categoryAttribute->getOrder());
+            }
+        }
     }
 
     public function testGetWakupPaginatedProductsValue() : void
