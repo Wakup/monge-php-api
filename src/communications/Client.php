@@ -306,18 +306,22 @@ class Client extends HttpClient
     /**
      * Obtains the available financial promotions for given user and products list.
      *
-     * @param int $personId Monge internal user identifier
-     * @param string[] $skuList List of product SKUs included con shopping cart
+     * @param UserCreditInfo $creditInfo Information of the logged user on the Monge credit system
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
      * @return FinancialPromotion[] List of financial promotions that applies to given user and cart
      * @throws WakupException
      */
-    public function getFinancialPromotions(int $personId, array $skuList) : array
+    public function getFinancialPromotions(UserCreditInfo $creditInfo, Cart $cart) : array
     {
+        $skuArray = [];
+        foreach ($cart->getProducts() as $product) {
+            array_push($skuArray, $product->getSku());
+        }
         $params = [
             'codigocanalVenta' => $this->config->mongeChannelCode,
             'codigoTienda' => $this->config->mongeShopCode,
-            'codigoArticulos' => join(',', $skuList),
-            'idPersona' => $personId
+            'codigoArticulos' => join(',', $skuArray),
+            'idPersona' => $creditInfo->getPersonId()
         ];
         $request = new MongeRequest($this->config, $this->mongeClient, FinancialPromotion::class,
             'Cotizacion/ListarPromocion', 98, $params);
@@ -327,15 +331,14 @@ class Client extends HttpClient
     /**
      * Obtains the financial scenarios for a given promotion and cart
      *
-     * @param int $personId Monge internal user identifier
-     * @param int $creditLineId Monge internal identifier for user credit line
+     * @param UserCreditInfo $creditInfo Information of the logged user on the Monge credit system
      * @param int $promotionId Selected promotion ID
      * @param Cart $cart Wrapper object for products added to the cart by the logged user
      * @return FinancialScenario[] List of financial scenarios available for given cart and promotion
      * @throws WakupException
      */
     public function getFinancialScenarios(
-        int $personId, int $creditLineId, int $promotionId, Cart $cart) : array
+        UserCreditInfo $creditInfo, int $promotionId, Cart $cart) : array
     {
         $TYPE_ID_PRODUCT = 1;
         $TYPE_ID_WARRANTY = 3;
@@ -358,8 +361,8 @@ class Client extends HttpClient
         }
 
         $params = [
-            'codCliente' => $personId,
-            'lineaCredito' => $creditLineId,
+            'codCliente' => $creditInfo->getPersonId(),
+            'lineaCredito' => $creditInfo->getCreditLineId(),
             'idPromocion' => $promotionId,
             'monto' => $cart->getProductsPrice(),
             'codProductos' => join(';', $skuArray),
@@ -465,7 +468,7 @@ class Client extends HttpClient
      * Cancels a previously made store stock reservation
      *
      * @param string $orderType Value from ORDER_TYPE_ constants to define the stock origin for order
-     * @param string $reservationId Id of the reservation
+     * @param string $reservationId Id of the reservation obtained on reserveOrderStock method
      * @return bool Returns true if request is successful
      * @throws WakupException
      */
@@ -491,6 +494,14 @@ class Client extends HttpClient
         }
     }
 
+    /**
+     * Confirms the stock reservation as previous step to process order
+     * @param string $orderType Value from ORDER_TYPE_ constants to define the stock origin for order
+     * @param string $reservationId Id of the reservation obtained on reserveOrderStock method
+     * @param Cart $cart Wrapper object for products added to the cart by the logged user
+     * @return bool Returns true if request is successful
+     * @throws WakupException
+     */
     public function confirmOrderStockReservation(string $orderType, string $reservationId, Cart $cart) : bool
     {
         switch ($orderType) {

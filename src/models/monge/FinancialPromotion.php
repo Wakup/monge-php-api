@@ -14,6 +14,18 @@ class FinancialPromotion
     private $id, $name;
 
     /**
+     * FinancialPromotion constructor.
+     * @param $id string Financial promotion identifier
+     * @param $name string Financial promotion internal name
+     */
+    public function __construct(string $id, string $name)
+    {
+        $this->id = $id;
+        $this->name = $name;
+    }
+
+
+    /**
      * @return int Financial promotion identifier
      */
     public function getId() : int

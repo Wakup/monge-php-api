@@ -61,7 +61,9 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetUserFinancialPromotions() : void
     {
-        $results = static::getClient()->getFinancialPromotions(145896, ['152950','146859']);
+        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $cart = $this->getTestCart(['152950','146859']);
+        $results = static::getClient()->getFinancialPromotions($clientInfo, $cart);
         $this->assertIsArray($results);
         foreach ($results as $promotion) {
             $this->assertInstanceOf(\Wakup\FinancialPromotion::class, $promotion);
@@ -72,8 +74,9 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetUserFinancialScenarios() : void
     {
+        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
         $cart = $this->getTestCart(['135360']);
-        $results = static::getClient()->getFinancialScenarios(145896, 302, 1, $cart);
+        $results = static::getClient()->getFinancialScenarios($clientInfo, 1, $cart);
         $this->assertIsArray($results);
         foreach ($results as $item) {
             $this->assertInstanceOf(\Wakup\FinancialScenario::class, $item);
@@ -159,8 +162,9 @@ final class MongeRequestsTest extends TestCase
         $this->assertIsBool($result);
     }
 
-    public function testProcessOrder() : void
+    public function testProcessCreditCardOrder() : void
     {
+        $paymentInfo = \Wakup\PaymentInfo::creditCard();
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $this->getTestUser(),
@@ -168,8 +172,29 @@ final class MongeRequestsTest extends TestCase
                 'reservation01',
                 $this->getTestCart(),
                 $this->getTestStore(),
-                new \Wakup\PaymentInfo(\Wakup\PaymentInfo::PAYMENT_METHOD_CREDIT_CARD)
+                $this->getTestContactPreferences(),
+                $paymentInfo
                 ));
+        $this->assertIsBool($result);
+    }
+
+    public function testProcessFinancedOrder() : void
+    {
+        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $cart = $this->getTestCart(['152950','146859']);
+        $promotion = static::getClient()->getFinancialPromotions($clientInfo, $cart)[0];
+        $scenario = static::getClient()->getFinancialScenarios($clientInfo, $promotion->getId(), $cart)[0];
+        $paymentInfo = \Wakup\PaymentInfo::onCredit($promotion, $scenario);
+        $result = static::getClient()->processOrder(
+            new \Wakup\Order(
+                $this->getTestUser(),
+                'order01',
+                'reservation01',
+                $this->getTestCart(),
+                $this->getTestStore(),
+                $this->getTestContactPreferences(),
+                $paymentInfo
+            ));
         $this->assertIsBool($result);
     }
 
