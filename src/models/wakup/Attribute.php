@@ -11,7 +11,7 @@ namespace Wakup;
 
 class Attribute
 {
-    private $identifier, $name, $type, $values, $visible, $filterable, $translatable, $mandatory, $order;
+    private $identifier, $name, $type, $values, $visible, $filterable, $translatable, $mandatory;
 
     /**
      * @return string Attribute string identifier
@@ -78,14 +78,6 @@ class Attribute
     }
 
     /**
-     * @return int Display order for attribute
-     */
-    public function getOrder() : int
-    {
-        return $this->order;
-    }
-
-    /**
      * @param string $identifier
      */
     public function setIdentifier(string $identifier): void
@@ -147,14 +139,6 @@ class Attribute
     public function setMandatory(bool $mandatory): void
     {
         $this->mandatory = $mandatory;
-    }
-
-    /**
-     * @param int $order
-     */
-    public function setOrder(int $order): void
-    {
-        $this->order = $order;
     }
 
 }

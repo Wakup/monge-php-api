@@ -63,7 +63,7 @@ class Category
     }
 
     /**
-     * @return string[] List of attributes for this category
+     * @return CategoryAttribute[] List of attributes for this category
      */
     public function getAttributes() : array
     {
@@ -71,7 +71,7 @@ class Category
     }
 
     /**
-     * @param string[] List of attributes for this category
+     * @param CategoryAttribute[] List of attributes for this category
      */
     public function setAttributes(array $attributes): void
     {
