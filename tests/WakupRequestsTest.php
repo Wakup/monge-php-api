@@ -71,6 +71,10 @@ final class WakupRequestsTest extends TestCase
             $this->assertIsString($store->getSku());
             $this->assertIsString($store->getName());
             $this->assertIsString($store->getAddress());
+            $this->assertIsString($store->getPostCode());
+            $this->assertIsString($store->getRegion());
+            $this->assertIsString($store->getCountry());
+            $this->assertIsString($store->getPhoneNumber());
             $this->assertIsFloat($store->getLatitude());
             $this->assertIsFloat($store->getLongitude());
             $this->assertIsFloat($store->getDistanceInKms());

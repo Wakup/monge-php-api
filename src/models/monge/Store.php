@@ -12,7 +12,8 @@ namespace Wakup;
 class Store
 {
 
-    private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance, $shipmentTime;
+    private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance,
+        $shipmentTime, $postCode, $country, $region, $phoneNumber;
 
     /**
      * Store constructor.
@@ -20,13 +21,20 @@ class Store
      * @param $warehouseId string External identifier for store warehouse
      * @param $name string Store display name
      * @param $address string Store physical address
+     * @param $postCode string Location postcode
+     * @param $region string Location region (province, state)
+     * @param $country string Country name
+     * @param $phoneNumber string Phone number
      * @param $latitude float Latitude component of store location coordinates
      * @param $longitude float Longitude component of store location coordinates
      * @param $distance float Distance in miles to search point, if any
      * @param $shipmentTime int Shipment time in days for products to arrive from central stock to current store
      */
-    public function __construct(string $sku, ?string $warehouseId, ?string $name, string $address,
-                                float $latitude, float $longitude, float $distance = 0, int $shipmentTime = 7)
+    public function __construct(
+        string $sku, ?string $warehouseId, ?string $name,
+        string $address, string $postCode, string $region, string $country, string $phoneNumber,
+        float $latitude, float $longitude, float $distance = 0, int $shipmentTime = 7
+    )
     {
         $this->sku = $sku;
         $this->warehouseId = $warehouseId;
@@ -36,6 +44,10 @@ class Store
         $this->longitude = $longitude;
         $this->distance = $distance;
         $this->shipmentTime = $shipmentTime;
+        $this->postCode = $postCode;
+        $this->region = $region;
+        $this->country = $country;
+        $this->phoneNumber = $phoneNumber;
     }
 
     /**
@@ -182,6 +194,7 @@ class Store
         return $this->distance * 1.609344;
     }
 
+    //TODO Remove dummy values from method responses
     /**
      * @return int Shipment time in days for products to arrive from central stock to current store
      */
@@ -197,5 +210,70 @@ class Store
     {
         $this->shipmentTime = $shipmentTime;
     }
+
+    /**
+     * @return string Location postcode
+     */
+    public function getPostCode(): string
+    {
+        return $this->postCode ?? '11801';
+    }
+
+    /**
+     * @param string $postCode Location postcode
+     */
+    public function setPostCode(string $postCode): void
+    {
+        $this->postCode = $postCode;
+    }
+
+    /**
+     * @return string Country name
+     */
+    public function getCountry(): string
+    {
+        return $this->country ?? 'Costa Rica';
+    }
+
+    /**
+     * @param string $country Country name
+     */
+    public function setCountry(string $country): void
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @return string Location region (province, state)
+     */
+    public function getRegion(): string
+    {
+        return $this->region ?? 'San José';
+    }
+
+    /**
+     * @param string $region Location region (province, state)
+     */
+    public function setRegion(string $region): void
+    {
+        $this->region = $region;
+    }
+
+    /**
+     * @return string Phone number
+     */
+    public function getPhoneNumber(): string
+    {
+        return $this->phoneNumber ?? '02-0448-0419';
+    }
+
+    /**
+     * @param string $phoneNumber Phone number
+     */
+    public function setPhoneNumber(string $phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
 
 }
