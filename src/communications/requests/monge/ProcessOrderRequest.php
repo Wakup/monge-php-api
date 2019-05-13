@@ -67,7 +67,7 @@ class ProcessOrderRequest extends MongeRequest
             'OrdenPedidoFinanciacion' => null,
             'OrdenPedidoFormasPago' => [
                 [
-                    'FormaPago' => $order->getPaymentInfo(),
+                    'FormaPago' => $order->getPaymentInfo()->getId(),
                     'Monto' => $order->getCart()->getProductsPrice(),
                     'Referencia' => ''
                 ]
@@ -91,7 +91,7 @@ class ProcessOrderRequest extends MongeRequest
             'TiendaRetiro' => $store->getSku(),
             'CodigoMoneda' => $config->mongeCurrencyId,
             'FechaProceso' => date('c'),
-            'FormaPago' => $order->getPaymentInfo(),
+            'FormaPago' => $order->getPaymentInfo()->getId(),
             'NumeroOrden' => $order->getOrderNumber(),
             'MontoCompra' => $cart->getProductsPriceWithoutTax(),
             'Impuesto' => $cart->getProductsTaxAmount(),
