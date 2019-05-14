@@ -13,7 +13,7 @@ class Store
 {
 
     private $sku, $warehouseId, $name, $address, $latitude, $longitude, $distance,
-        $shipmentTime, $postCode, $country, $region, $phoneNumber;
+        $shipmentTime, $postCode, $country, $region, $city, $phoneNumber;
 
     /**
      * Store constructor.
@@ -22,6 +22,7 @@ class Store
      * @param $name string Store display name
      * @param $address string Store physical address
      * @param $postCode string Location postcode
+     * @param $city string City where the store is located
      * @param $region string Location region (province, state)
      * @param $country string Country name
      * @param $phoneNumber string Phone number
@@ -32,7 +33,7 @@ class Store
      */
     public function __construct(
         string $sku, ?string $warehouseId, ?string $name,
-        string $address, string $postCode, string $region, string $country, string $phoneNumber,
+        string $address, string $postCode, string $city, string $region, string $country, string $phoneNumber,
         float $latitude, float $longitude, float $distance = 0, int $shipmentTime = 7
     )
     {
@@ -45,6 +46,7 @@ class Store
         $this->distance = $distance;
         $this->shipmentTime = $shipmentTime;
         $this->postCode = $postCode;
+        $this->city = $city;
         $this->region = $region;
         $this->country = $country;
         $this->phoneNumber = $phoneNumber;
@@ -273,6 +275,22 @@ class Store
     public function setPhoneNumber(string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
+    }
+
+    /**
+     * @return string City where the store is located
+     */
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city City where the store is located
+     */
+    public function setCity(string $city): void
+    {
+        $this->city = $city;
     }
 
 

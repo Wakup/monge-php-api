@@ -202,7 +202,7 @@ final class MongeRequestsTest extends TestCase
     private function getTestStore(string $storeId = 'C002'): \Wakup\Store
     {
         return new \Wakup\Store($storeId, '1001', 'Shop name', 'Address', '11801',
-            'San José', 'Costa Rica', '4032-4703', 10.0160092, -84.2173331);
+            'San José', 'San José', 'Costa Rica', '4032-4703', 10.0160092, -84.2173331);
     }
 
     private function getTestCartProduct(string $sku = '100331') : \Wakup\CartProduct
