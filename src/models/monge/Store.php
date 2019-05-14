@@ -111,7 +111,7 @@ class Store
     /**
      * @return string Store physical address
      */
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
@@ -119,7 +119,7 @@ class Store
     /**
      * @param string $address Store physical address
      */
-    public function setAddress(string $address): void
+    public function setAddress(?string $address): void
     {
         $this->address = $address;
     }
@@ -208,7 +208,7 @@ class Store
     /**
      * @param int $shipmentTime Shipment time in days for products to arrive from central stock to current store
      */
-    public function setShipmentTime(int $shipmentTime): void
+    public function setShipmentTime(?int $shipmentTime): void
     {
         $this->shipmentTime = $shipmentTime;
     }
@@ -216,7 +216,7 @@ class Store
     /**
      * @return string Location postcode
      */
-    public function getPostCode(): string
+    public function getPostCode(): ?string
     {
         return $this->postCode ?? '11801';
     }
@@ -224,7 +224,7 @@ class Store
     /**
      * @param string $postCode Location postcode
      */
-    public function setPostCode(string $postCode): void
+    public function setPostCode(?string $postCode): void
     {
         $this->postCode = $postCode;
     }
@@ -232,7 +232,7 @@ class Store
     /**
      * @return string Country name
      */
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country ?? 'Costa Rica';
     }
@@ -240,7 +240,7 @@ class Store
     /**
      * @param string $country Country name
      */
-    public function setCountry(string $country): void
+    public function setCountry(?string $country): void
     {
         $this->country = $country;
     }
@@ -248,7 +248,7 @@ class Store
     /**
      * @return string Location region (province, state)
      */
-    public function getRegion(): string
+    public function getRegion(): ?string
     {
         return $this->region ?? 'San José';
     }
@@ -256,7 +256,7 @@ class Store
     /**
      * @param string $region Location region (province, state)
      */
-    public function setRegion(string $region): void
+    public function setRegion(?string $region): void
     {
         $this->region = $region;
     }
@@ -264,7 +264,7 @@ class Store
     /**
      * @return string Phone number
      */
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber ?? '02-0448-0419';
     }
@@ -272,7 +272,7 @@ class Store
     /**
      * @param string $phoneNumber Phone number
      */
-    public function setPhoneNumber(string $phoneNumber): void
+    public function setPhoneNumber(?string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
@@ -280,7 +280,7 @@ class Store
     /**
      * @return string City where the store is located
      */
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
@@ -288,7 +288,7 @@ class Store
     /**
      * @param string $city City where the store is located
      */
-    public function setCity(string $city): void
+    public function setCity(?string $city): void
     {
         $this->city = $city;
     }
