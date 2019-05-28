@@ -79,8 +79,8 @@ class ProcessOrderRequest extends MongeRequest
                 'SegundoNombre' => $user->getMiddleName(),
                 'PrimerApellido' => $user->getFirstSurname(),
                 'SegundoApellido' => $user->getSecondSurname(),
-                'IdCuenta' => $user->getAccountId(),
-                'IdPersona' => $user->getPersonId(),
+                'IdCuenta' => $paymentInfo->getAccountId(),
+                'IdPersona' => $paymentInfo->getPersonId() ?? 0,
                 'Correo' => $user->getEmail()
             ],
             'CodigoUsuario' => 'CLIENTE_ECOMMERCE',

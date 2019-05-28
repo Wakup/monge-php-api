@@ -11,7 +11,7 @@ namespace Wakup;
 
 class User
 {
-    private $id, $idType, $firstName, $middleName, $firstSurname, $secondSurname, $accountId, $personId, $email;
+    private $id, $idType, $firstName, $middleName, $firstSurname, $secondSurname, $email;
 
     const ID_TYPE_TAX_ID = 'CEDULA';
 
@@ -23,13 +23,11 @@ class User
      * @param $middleName ?string User middle name
      * @param $firstSurname ?string User first surname
      * @param $secondSurname ?string User second surname
-     * @param $personId string Internal identifier for user on Monge system
-     * @param $accountId ?string User credit account identifier
      * @param $email string User account email
      */
     public function __construct(string $id, string $idType,
-                                ?string $firstName, ?string $middleName, ?string $firstSurname, ?string $secondSurname,
-                                string $personId, ?string $accountId, string $email)
+                                ?string $firstName, ?string $middleName, ?string $firstSurname,
+                                ?string $secondSurname, string $email)
     {
         $this->id = $id;
         $this->idType = $idType;
@@ -37,8 +35,6 @@ class User
         $this->middleName = $middleName;
         $this->firstSurname = $firstSurname;
         $this->secondSurname = $secondSurname;
-        $this->accountId = $accountId;
-        $this->personId = $personId;
         $this->email = $email;
     }
 
@@ -137,38 +133,6 @@ class User
     public function setSecondSurname(?string $secondSurname): void
     {
         $this->secondSurname = $secondSurname;
-    }
-
-    /**
-     * @return string User credit account identifier
-     */
-    public function getAccountId() : ?string
-    {
-        return $this->accountId;
-    }
-
-    /**
-     * @param string $accountId User credit account identifier
-     */
-    public function setAccountId(?string $accountId): void
-    {
-        $this->accountId = $accountId;
-    }
-
-    /**
-     * @return string Internal identifier for user on Monge system
-     */
-    public function getPersonId() : string
-    {
-        return $this->personId;
-    }
-
-    /**
-     * @param string $personId Internal identifier for user on Monge system
-     */
-    public function setPersonId(string $personId): void
-    {
-        $this->personId = $personId;
     }
 
     /**

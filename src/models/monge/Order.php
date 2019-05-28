@@ -31,7 +31,7 @@ class Order
      */
     private $store;
     /**
-     * @var string $paymentInfo
+     * @var PaymentInfo $paymentInfo
      */
     private $paymentInfo;
 

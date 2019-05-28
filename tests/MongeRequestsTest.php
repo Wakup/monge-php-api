@@ -25,7 +25,7 @@ final class MongeRequestsTest extends TestCase
     {
         return new \Wakup\User('01-0730-0179', \Wakup\User::ID_TYPE_TAX_ID,
             'Ana', 'Isabel', 'Ramirez', 'Ramirez',
-            '1408804', '1365853', 'pruebas09@gmail.com');
+            'pruebas09@gmail.com');
     }
 
     /**
@@ -184,7 +184,7 @@ final class MongeRequestsTest extends TestCase
         $cart = $this->getTestCart(['152950','146859']);
         $promotion = static::getClient()->getFinancialPromotions($clientInfo, $cart)[0];
         $scenario = static::getClient()->getFinancialScenarios($clientInfo, $promotion->getId(), $cart)[0];
-        $paymentInfo = \Wakup\PaymentInfo::onCredit($promotion, $scenario);
+        $paymentInfo = \Wakup\PaymentInfo::onCredit($promotion, $scenario, $clientInfo);
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $this->getTestUser(),
