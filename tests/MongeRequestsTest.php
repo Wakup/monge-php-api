@@ -33,7 +33,7 @@ final class MongeRequestsTest extends TestCase
      */
     public function testGetUserCreditInfo() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
         $this->assertInstanceOf(\Wakup\UserCreditInfo::class, $clientInfo);
         $this->assertIsInt($clientInfo->getCreditLineId());
         $this->assertIsInt($clientInfo->getAccountId());
@@ -61,7 +61,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetUserFinancialPromotions() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
         $cart = $this->getTestCart(['152950','146859']);
         $results = static::getClient()->getFinancialPromotions($clientInfo, $cart);
         $this->assertIsArray($results);
@@ -74,7 +74,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetUserFinancialScenarios() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
         $cart = $this->getTestCart(['135360']);
         $results = static::getClient()->getFinancialScenarios($clientInfo, 1, $cart);
         $this->assertIsArray($results);
@@ -180,7 +180,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testProcessFinancedOrder() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("02-0448-0419");
+        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
         $cart = $this->getTestCart(['152950','146859']);
         $promotion = static::getClient()->getFinancialPromotions($clientInfo, $cart)[0];
         $scenario = static::getClient()->getFinancialScenarios($clientInfo, $promotion->getId(), $cart)[0];
