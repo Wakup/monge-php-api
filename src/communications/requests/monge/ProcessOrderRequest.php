@@ -75,10 +75,10 @@ class ProcessOrderRequest extends MongeRequest
             'cliente' => [
                 'Identificacion' => $user->getId(),
                 'TipoIdentificacion' => $user->getIdType(),
-                'PrimerNombre' => $user->getFirstName(),
-                'SegundoNombre' => $user->getMiddleName(),
-                'PrimerApellido' => $user->getFirstSurname(),
-                'SegundoApellido' => $user->getSecondSurname(),
+                'PrimerNombre' => $user->getFirstName() ?? '',
+                'SegundoNombre' => $user->getMiddleName() ?? '',
+                'PrimerApellido' => $user->getFirstSurname() ?? '',
+                'SegundoApellido' => $user->getSecondSurname() ?? '',
                 'IdCuenta' => $paymentInfo->getAccountId(),
                 'IdPersona' => $paymentInfo->getPersonId() ?? 0,
                 'Correo' => $user->getEmail()
