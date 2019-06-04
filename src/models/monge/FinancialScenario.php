@@ -11,7 +11,7 @@ namespace Wakup;
 
 class FinancialScenario
 {
-    private $id, $term, $rate, $fee, $totalFee, $description, $paymentDate,
+    private $id, $term, $rate, $fee, $totalFee, $segmentDescription, $paymentDate,
         $frequency, $annualEffectiveRate, $warrantyFee, $segmentId;
 
     /**
@@ -97,9 +97,9 @@ class FinancialScenario
     /**
      * @return string Description of the segment
      */
-    public function getDescription() : string
+    public function getSegmentDescription() : string
     {
-        return $this->description;
+        return $this->segmentDescription;
     }
 
     /**
@@ -107,7 +107,7 @@ class FinancialScenario
      */
     public function setDescripcionSegmento(string $description): void
     {
-        $this->description = $description;
+        $this->segmentDescription = $description;
     }
 
     /**

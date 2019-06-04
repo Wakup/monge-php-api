@@ -61,10 +61,33 @@ class ProcessOrderRequest extends MongeRequest
             }
         }
 
+        $financialJson = null;
+        if ($scenario != null && $promotion != null) {
+            $financialJson = [
+                'Cuota' => $scenario->getFee(),
+                'CuotaTotalDelPago' => $scenario->getTotalFee(),
+                'Frecuencia' => $scenario->getFrequency(),
+                'IdTipoSegmento' => $scenario->getSegmentId(),
+                'DescripcionSegmento' => $scenario->getSegmentDescription(),
+                'MontoFinanciar' => $cart->getProductsPrice(),
+                'Plazo' => $scenario->getTerm(),
+                'TCEA' => $scenario->getAnnualEffectiveRate(),
+                'Tasa' => $scenario->getRate(),
+                'TipoCredito' => 1,
+                'FechaDePago' => $scenario->getPaymentDate()->format(\DateTime::ATOM),
+                //
+                'Prima' => 0,
+                //'TipoSegmento' => '1=Revolvente',
+                //'IdTPlanSugerido' => 281,
+                'NumeroOrden' => $order->getOrderNumber(),
+                'NumeroTransaccion' => $order->getOrderNumber()
+            ];
+        }
+
         $orderJson = [
             'OrdenPedidoDetalle' => $productArray,
             'OrdenPedidoDetalleExtragarantia' => $warrantyArray,
-            'OrdenPedidoFinanciacion' => null,
+            'OrdenPedidoFinanciacion' => [$financialJson],
             'OrdenPedidoFormasPago' => [
                 [
                     'FormaPago' => $order->getPaymentInfo()->getId(),
@@ -86,7 +109,7 @@ class ProcessOrderRequest extends MongeRequest
             'CodigoUsuario' => 'CLIENTE_ECOMMERCE',
             'TipoOrden' => 'Orden.Ecommerce',
             'TipoVenta' => 'CON',
-            'CanalVenta' => 'VEN.WEB',
+            'CanalVenta' => $config->mongeChannelCode,
             'Tienda' => "C{$config->mongeShopCode}",  // Requires to prepend C to shop code
             'TiendaRetiro' => $store->getSku(),
             'CodigoMoneda' => $config->mongeCurrencyId,

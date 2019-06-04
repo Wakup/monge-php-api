@@ -72,7 +72,7 @@ class UserCreditInfo
     /**
      * @param string $accountStatus Description for user account status on credit system
      */
-    public function setAccountStatus(?string $accountStatus): void
+    public function setEstCuenta(?string $accountStatus): void
     {
         $this->accountStatus = $accountStatus;
     }
