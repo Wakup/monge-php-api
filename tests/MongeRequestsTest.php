@@ -21,16 +21,6 @@ final class MongeRequestsTest extends TestCase
         return new Wakup\Client();
     }
 
-    private function getTestUser() : \Wakup\User
-    {
-        return new \Wakup\User('01-0730-0179', \Wakup\User::ID_TYPE_TAX_ID,
-            'Ana', 'Isabel', 'Ramirez', 'Ramirez',
-            'pruebas09@gmail.com');
-    }
-
-    /**
-     * @group Wakup
-     */
     public function testGetUserCreditInfo() : void
     {
         $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
@@ -41,6 +31,12 @@ final class MongeRequestsTest extends TestCase
         $this->assertIsInt($clientInfo->getPersonId());
         $this->assertIsFloat($clientInfo->getAvailableCreditFee());
         $this->assertIsFloat($clientInfo->getAvailableCreditLine());
+    }
+
+    public function testGetNullUserCreditInfo() : void
+    {
+        $clientInfo = static::getClient()->getUserCreditInfo("01-0111-0210");
+        $this->assertNull($clientInfo);
     }
 
     public function testGetWarrantyPlans() : void
@@ -180,14 +176,15 @@ final class MongeRequestsTest extends TestCase
 
     public function testProcessFinancedOrder() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
+        $taxId = '06-0219-0901';
+        $clientInfo = static::getClient()->getUserCreditInfo($taxId);
         $cart = $this->getTestCart(['152950','146859']);
         $promotion = static::getClient()->getFinancialPromotions($clientInfo, $cart)[0];
         $scenario = static::getClient()->getFinancialScenarios($clientInfo, $promotion->getId(), $cart)[0];
         $paymentInfo = \Wakup\PaymentInfo::onCredit($promotion, $scenario, $clientInfo);
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
-                $this->getTestUser(),
+                $this->getTestUser($taxId),
                 'order01',
                 'reservation01',
                 $this->getTestCart(),
@@ -222,6 +219,13 @@ final class MongeRequestsTest extends TestCase
 
     private function getTestContactPreferences() : \Wakup\ContactPreferences
     {
-        return new \Wakup\ContactPreferences(false, false, true, 'testemail@mail.com', null);
+        return new \Wakup\ContactPreferences(false, false, true, 'testemail@mail.com', '8324-8614');
+    }
+
+    private function getTestUser($tax_id='01-0730-0179') : \Wakup\User
+    {
+        return new \Wakup\User($tax_id, \Wakup\User::ID_TYPE_TAX_ID,
+            'Ana', 'Isabel', 'Ramirez', 'Ramirez',
+            'pruebas09@gmail.com');
     }
 }

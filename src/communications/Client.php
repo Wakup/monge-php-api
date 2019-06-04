@@ -273,10 +273,10 @@ class Client extends HttpClient
      * identifiers for later use on other requests.
      *
      * @param string $userIdentifier User VAT identifier
-     * @return UserCreditInfo Credit information for given user. Null if user is not registered on credit system.
+     * @return UserCreditInfo|null Credit information for given user. Null if user is not registered on credit system.
      * @throws WakupException
      */
-    public function getUserCreditInfo(string $userIdentifier) : UserCreditInfo
+    public function getUserCreditInfo(string $userIdentifier) : ?UserCreditInfo
     {
         $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier];
         $request = new MongeRequest($this->config, $this->mongeClient, UserCreditInfo::class,
