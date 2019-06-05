@@ -63,7 +63,7 @@ class ProcessOrderRequest extends MongeRequest
 
         $financialJson = null;
         if ($scenario != null && $promotion != null) {
-            $financialJson = [
+            $financialJson = [[
                 'Cuota' => $scenario->getFee(),
                 'CuotaTotalDelPago' => $scenario->getTotalFee(),
                 'Frecuencia' => $scenario->getFrequency(),
@@ -81,13 +81,13 @@ class ProcessOrderRequest extends MongeRequest
                 //'IdTPlanSugerido' => 281,
                 'NumeroOrden' => $order->getOrderNumber(),
                 'NumeroTransaccion' => $order->getOrderNumber()
-            ];
+            ]];
         }
 
         $orderJson = [
             'OrdenPedidoDetalle' => $productArray,
             'OrdenPedidoDetalleExtragarantia' => $warrantyArray,
-            'OrdenPedidoFinanciacion' => [$financialJson],
+            'OrdenPedidoFinanciacion' => $financialJson,
             'OrdenPedidoFormasPago' => [
                 [
                     'FormaPago' => $order->getPaymentInfo()->getId(),
