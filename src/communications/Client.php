@@ -515,18 +515,18 @@ class Client extends HttpClient
                 return true;
                 break;
             case self::ORDER_TYPE_CENTRAL:
-                $items = [];
-                foreach ($cart->getProducts() as $i=>$cartProduct) {
+                $productCount = 0;
+                foreach ($cart->getProducts() as $cartProduct) {
                     if (!$cartProduct->isVirtual()) {
-                        array_push($items, [
-                                'documentoReferencia' => $reservationId,
-                                'cantidad' => $cartProduct->getCount(),
-                                'referencia' => $i,
-                                'unidadMedida' => 'UN'
-                            ]
-                        );
+                        $productCount += $cartProduct->getCount();
                     }
                 }
+                $items = [[
+                    'documentoReferencia' => $reservationId,
+                    'cantidad' => $productCount,
+                    'referencia' => 1,
+                    'unidadMedida' => 'UN'
+                ]];
                 $params = [
                     'fechaCreacion' => date(\DateTime::ATOM),
                     'detalle' => $items
