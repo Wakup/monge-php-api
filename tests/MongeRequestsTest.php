@@ -195,6 +195,54 @@ final class MongeRequestsTest extends TestCase
         $this->assertIsBool($result);
     }
 
+    public function testCompleteCreditCardCentralOrder() : void
+    {
+        $orderType = \Wakup\Client::ORDER_TYPE_CENTRAL;
+        $taxId = '06-0219-0901';
+        $store = $this->getTestStore('C002');
+        $user = $this->getTestUser($taxId);
+        $cart = $this->getTestCart(['157947','153805']);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
+        $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
+
+        $paymentInfo = \Wakup\PaymentInfo::creditCard();
+        $result = static::getClient()->processOrder(
+            new \Wakup\Order(
+                $user,
+                'orderTest01',
+                $reservationId,
+                $cart,
+                $store,
+                $this->getTestContactPreferences(),
+                $paymentInfo
+            ));
+        $this->assertIsBool($result);
+    }
+
+    public function testCompleteCreditCardStoreOrder() : void
+    {
+        $orderType = \Wakup\Client::ORDER_TYPE_STORE;
+        $taxId = '06-0219-0901';
+        $store = $this->getTestStore('C002');
+        $user = $this->getTestUser($taxId);
+        $cart = $this->getTestCart(['157947','153805']);
+        $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
+        $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
+
+        $paymentInfo = \Wakup\PaymentInfo::creditCard();
+        $result = static::getClient()->processOrder(
+            new \Wakup\Order(
+                $user,
+                'orderTest01',
+                $reservationId,
+                $cart,
+                $store,
+                $this->getTestContactPreferences(),
+                $paymentInfo
+            ));
+        $this->assertIsBool($result);
+    }
+
     // Private helper methods
     private function getTestStore(string $storeId = 'C002'): \Wakup\Store
     {
