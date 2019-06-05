@@ -11,7 +11,7 @@ namespace Wakup;
 
 class CartProduct
 {
-    private $price, $count, $sku, $taxRate, $warrantyPlan;
+    private $price, $count, $sku, $taxRate, $warrantyPlan, $virtual;
 
     /**
      * CartProduct constructor.
@@ -21,14 +21,16 @@ class CartProduct
      * @param $typeId int Product type identifier. Uses the TYPE_ID_* constants for available values
      * @param $count int Amount of products of the same type & price
      * @param $warrantyPlan Warranty plan linked with the products
+     * @param $virtual bool Defines if the product is not physical and does not use stock
      */
-    public function __construct(string $sku, float $price = 0, float $taxRate = 0, int $count = 1, ?WarrantyPlan $warrantyPlan = null)
+    public function __construct(string $sku, float $price = 0, float $taxRate = 0, int $count = 1, ?WarrantyPlan $warrantyPlan = null, bool $virtual = false)
     {
         $this->price = $price;
         $this->count = $count;
         $this->sku = $sku;
         $this->warrantyPlan = $warrantyPlan;
         $this->taxRate = $taxRate;
+        $this->virtual = $virtual;
     }
 
     /**
@@ -125,6 +127,14 @@ class CartProduct
     public function getWarrantyPlan(): ?WarrantyPlan
     {
         return $this->warrantyPlan;
+    }
+
+    /**
+     * @return bool Defines if the product is not physical and does not use stock
+     */
+    public function isVirtual(): bool
+    {
+        return $this->virtual;
     }
 
 }

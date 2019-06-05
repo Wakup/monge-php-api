@@ -388,7 +388,9 @@ class Client extends HttpClient
     {
         $items = [];
         foreach ($cart->getProducts() as $cartProduct) {
-            array_push($items, ['sku' => $cartProduct->getSku(), 'cantidad' => $cartProduct->getCount()]);
+            if (!$cartProduct->isVirtual()) {
+                array_push($items, ['sku' => $cartProduct->getSku(), 'cantidad' => $cartProduct->getCount()]);
+            }
         }
         $params = [
             'tiendas' => $stores,
@@ -419,24 +421,28 @@ class Client extends HttpClient
         foreach ($cart->getProducts() as $cartProduct) {
             switch ($orderType) {
                 case self::ORDER_TYPE_STORE:
-                    array_push($items, [
-                            'sku' => $cartProduct->getSku(),
-                            'cantidad' => $cartProduct->getCount(),
-                            'tienda' => $store->getSku(),
-                            'bodegaOrigen' => $store->getWarehouseId(),
-                            'pais' => $this->config->mongeCountryCode]
-                    );
+                    if (!$cartProduct->isVirtual()) {
+                        array_push($items, [
+                                'sku' => $cartProduct->getSku(),
+                                'cantidad' => $cartProduct->getCount(),
+                                'tienda' => $store->getSku(),
+                                'bodegaOrigen' => $store->getWarehouseId(),
+                                'pais' => $this->config->mongeCountryCode]
+                        );
+                    }
                     break;
                 case self::ORDER_TYPE_CENTRAL:
-                    array_push($items, [
-                            'sku' => $cartProduct->getSku(),
-                            'tienda' => $store->getSku(),
-                            'bodega' => $this->config->mongeWarehouseCode,
-                            'cantidad' => $cartProduct->getCount(),
-                            'unidadMedida' => 'UN',
-                            'motivoPedido' => '',
-                        ]
-                    );
+                    if (!$cartProduct->isVirtual()) {
+                        array_push($items, [
+                                'sku' => $cartProduct->getSku(),
+                                'tienda' => $store->getSku(),
+                                'bodega' => $this->config->mongeWarehouseCode,
+                                'cantidad' => $cartProduct->getCount(),
+                                'unidadMedida' => 'UN',
+                                'motivoPedido' => '',
+                            ]
+                        );
+                    }
                     break;
                 default:
                     throw new WakupException(new \Exception('Unsupported order type'));
@@ -511,14 +517,15 @@ class Client extends HttpClient
             case self::ORDER_TYPE_CENTRAL:
                 $items = [];
                 foreach ($cart->getProducts() as $i=>$cartProduct) {
-
-                    array_push($items, [
-                            'documentoReferencia' => $reservationId,
-                            'cantidad' => $cartProduct->getCount(),
-                            'referencia' => $i,
-                            'unidadMedida' => 'UN'
+                    if (!$cartProduct->isVirtual()) {
+                        array_push($items, [
+                                'documentoReferencia' => $reservationId,
+                                'cantidad' => $cartProduct->getCount(),
+                                'referencia' => $i,
+                                'unidadMedida' => 'UN'
                             ]
-                    );
+                        );
+                    }
                 }
                 $params = [
                     'fechaCreacion' => date(\DateTime::ATOM),

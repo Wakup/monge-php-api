@@ -11,13 +11,14 @@ namespace Wakup;
 
 class ProductInfo
 {
-    private $name, $category, $active, $properties;
+    private $name, $category, $active, $properties, $virtual;
     // Static properties
     /**
      * @var $staticProperties array
      */
     private $staticProperties;
     const PROP_SHORT_DESCRIPTION = 'short_description';
+    const PROP_VIRTUAL = 'virtual';
     const PROP_DESCRIPTION = 'description';
     const PROP_WARRANTY = 'has-warranty-plans';
     const PROP_RELATED_PRODUCTS = 'related-products';
@@ -26,6 +27,7 @@ class ProductInfo
     const STATIC_PROPERTIES = [
         self::PROP_SHORT_DESCRIPTION,
         self::PROP_DESCRIPTION,
+        self::PROP_VIRTUAL,
         self::PROP_WARRANTY,
         self::PROP_RELATED_PRODUCTS,
         self::PROP_REQUIRED_PRODUCTS,
@@ -169,6 +171,22 @@ class ProductInfo
     public function hasWarrantyPlans() : bool
     {
         return $this->staticProperties[self::PROP_WARRANTY] ?? false;
+    }
+
+    /**
+     * @return bool Defines if the product is not physical and does not use stock
+     */
+    public function isVirtual(): bool
+    {
+        return $this->virtual ?? false;
+    }
+
+    /**
+     * @param bool $virtual Defines if the product is not physical and does not use stock
+     */
+    public function setVirtual(bool $virtual): void
+    {
+        $this->virtual = $virtual;
     }
 
 
