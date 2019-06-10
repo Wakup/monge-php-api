@@ -279,11 +279,12 @@ class Client extends HttpClient
     public function getUserCreditInfo(string $userIdentifier) : ?UserCreditInfo
     {
         $params = ['TipoIdentificacion' => 51, 'Identificacion' => $userIdentifier];
-        $request = new MongeRequest($this->config, $this->mongeClient, UserCreditInfo::class,
-            'Cliente/BuscarCliente', 96, $params);
+        $request = new MongeRequest($this->config, $this->mongeClient, new SystemActionCreditInfo(),
+            'Cliente/ValidaCliente', 96, $params);
         // Return only first value
-        $responseArray = $request->launch();
-        return count($responseArray) > 0 ? $responseArray[0] : null;
+        $response = $request->launch();
+        $creditInfo = $response->getCreditInfo();
+        return $creditInfo != null && $creditInfo->getPersonId() > 0 ? $response->getCreditInfo() : null;
     }
 
     /**

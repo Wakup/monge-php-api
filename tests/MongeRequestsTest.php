@@ -97,7 +97,7 @@ final class MongeRequestsTest extends TestCase
 
     public function testGetNearestStoresStock() : void
     {
-        $results = static::getClient()->getNearestStoresStock($this->getTestCart(), 9, -82);
+        $results = static::getClient()->getNearestStoresStock($this->getTestCart(['152420']), 9, -82);
         $this->assertIsArray($results);
         $lastDistance = 0;
         foreach ($results as $storeStock) {
@@ -170,7 +170,7 @@ final class MongeRequestsTest extends TestCase
                 $this->getTestStore(),
                 $this->getTestContactPreferences(),
                 $paymentInfo
-                ));
+            ));
         $this->assertIsBool($result);
     }
 
@@ -209,7 +209,7 @@ final class MongeRequestsTest extends TestCase
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $user,
-                'orderTest01',
+                '20190605/02',
                 $reservationId,
                 $cart,
                 $store,
@@ -223,9 +223,25 @@ final class MongeRequestsTest extends TestCase
     {
         $orderType = \Wakup\Client::ORDER_TYPE_STORE;
         $taxId = '06-0219-0901';
-        $store = $this->getTestStore('C002');
-        $user = $this->getTestUser($taxId);
         $cart = $this->getTestCart(['157947','153805']);
+        $stores = static::getClient()->getNearestStoresStock($cart, 10.0160092, -84.2173331, 10);
+        $store = $stores[0]->getStore();
+        foreach ($stores as $storeStock) {
+            # Find a store with enough stock
+            $valid = true;
+            foreach ($storeStock->getItems() as $skuStock) {
+                if ($skuStock->getStock() == 0) {
+                    $valid = false;
+                    break;
+                }
+            }
+            if ($valid) {
+                $store = $storeStock->getStore();
+                break;
+            }
+
+        }
+        $user = $this->getTestUser($taxId);
         $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
         $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
 
