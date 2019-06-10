@@ -128,8 +128,8 @@ class ProcessOrderRequest extends MongeRequest
             'TelefonoContacto' => $contact->getPhoneNumber(),
             // Credit info
             'MontoFinanciado' => $scenario != null ? $cart->getProductsPrice() : 0,
-            'IdPromocion' => $promotion != null ? $promotion->getId() : 0,
-            'IdSegmento' => $scenario != null ? $scenario->getSegmentId() : 0,
+            'IdPromocion' => $promotion != null ? $promotion->getId() : null,
+            'IdSegmento' => $scenario != null ? $scenario->getSegmentId() : null,
             'Plazo' => $scenario != null ? $scenario->getTerm() : 0,
             'TasaInteresNormal' => $scenario != null ? $scenario->getRate() : 0,
             'CuotaPactada' => $scenario != null ? $scenario->getFee() : 0,
