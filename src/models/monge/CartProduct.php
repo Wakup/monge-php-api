@@ -86,7 +86,7 @@ class CartProduct
      */
     public function getPriceWithoutTax() : float
     {
-        return $this->getTotalPrice() / (1 + $this->getTaxRate() / 100);
+        return $this->getPrice() / (1 + $this->getTaxRate() / 100);
     }
 
     /**
