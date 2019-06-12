@@ -56,7 +56,7 @@ class HttpClient
         // TODO take config as parameter
         return new Config(
             'http://ecommerce.wakup.net:9000/',
-            '66145878-9b0f-415f-ac1b-f10c6306face',
+            'e85c7c92-38dc-4263-9322-aadc07ba846d',
             335,
             'http://ecommerce.grupomonge-ti.com:{$port}/api/v1.0/', 'CR',
             212, 8004, 260, 188,
