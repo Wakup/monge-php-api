@@ -18,4 +18,9 @@ class ParentRequestsTest extends TestCase {
         return new Wakup\Client($logger);
     }
 
+    public function testIsUserRegisteredTrue() : void
+    {
+        $this->assertInstanceOf(\Wakup\Client::class, self::getClient());
+    }
+
 }
