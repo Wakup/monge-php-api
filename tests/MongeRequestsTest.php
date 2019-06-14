@@ -10,20 +10,14 @@ declare(strict_types=1);
 
 // Autoload files using the Composer autoloader.
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/ParentRequestsTest.php';
 
-use PHPUnit\Framework\TestCase;
-
-final class MongeRequestsTest extends TestCase
+final class MongeRequestsTest extends ParentRequestsTest
 {
-
-    private static function getClient() : \Wakup\Client
-    {
-        return new Wakup\Client();
-    }
 
     public function testGetUserCreditInfo() : void
     {
-        $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
+        $clientInfo = static::getClient()->getUserCreditInfo("01-0882-0710");
         $this->assertInstanceOf(\Wakup\UserCreditInfo::class, $clientInfo);
         $this->assertIsInt($clientInfo->getCreditLineId());
         $this->assertIsInt($clientInfo->getAccountId());
@@ -178,7 +172,7 @@ final class MongeRequestsTest extends TestCase
     {
         $taxId = '06-0219-0901';
         $clientInfo = static::getClient()->getUserCreditInfo($taxId);
-        $cart = $this->getTestCart(['152950','146859']);
+        $cart = $this->getTestCart();
         $promotion = static::getClient()->getFinancialPromotions($clientInfo, $cart)[0];
         $scenario = static::getClient()->getFinancialScenarios($clientInfo, $promotion->getId(), $cart)[0];
         $paymentInfo = \Wakup\PaymentInfo::onCredit($promotion, $scenario, $clientInfo);
@@ -201,7 +195,7 @@ final class MongeRequestsTest extends TestCase
         $taxId = '06-0219-0901';
         $store = $this->getTestStore('C002');
         $user = $this->getTestUser($taxId);
-        $cart = $this->getTestCart(['157947','153805']);
+        $cart = $this->getTestCart();
         $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
         $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
 
@@ -223,16 +217,20 @@ final class MongeRequestsTest extends TestCase
     {
         $orderType = \Wakup\Client::ORDER_TYPE_STORE;
         $taxId = '06-0219-0901';
-        $cart = $this->getTestCart(['157947','153805']);
-        $stores = static::getClient()->getNearestStoresStock($cart, 10.0160092, -84.2173331, 10);
-        $store = $stores[0]->getStore();
+        $cart = $this->getTestCart();
+        $stores = static::getClient()->getNearestStoresStock($cart, 10.0160092, -84.2173331, 50);
         foreach ($stores as $storeStock) {
-            # Find a store with enough stock
             $valid = true;
+            # Find a store with enough stock
             foreach ($storeStock->getItems() as $skuStock) {
                 if ($skuStock->getStock() == 0) {
-                    $valid = false;
-                    break;
+                    foreach ($cart->getProducts() as $cartProduct) {
+                        if ($cartProduct->getSku() == $skuStock->getSku()) {
+                            $valid = $valid && $cartProduct->getCount() <= $skuStock->getStock();
+                            break;
+                        }
+                    }
+                    if (!$valid) break;
                 }
             }
             if ($valid) {
@@ -240,6 +238,9 @@ final class MongeRequestsTest extends TestCase
                 break;
             }
 
+        }
+        if ($store == null) {
+            throw new Exception('Not enough stock found for cart');
         }
         $user = $this->getTestUser($taxId);
         $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
@@ -269,10 +270,10 @@ final class MongeRequestsTest extends TestCase
     private function getTestCartProduct(string $sku = '100331') : \Wakup\CartProduct
     {
         $warranty = new \Wakup\WarrantyPlan($sku, 12, 'Extragarantia', 100000);
-        return new \Wakup\CartProduct($sku, 10000, 13, 1, $warranty);
+        return new \Wakup\CartProduct($sku, 10000, 13, rand(1, 5), $warranty);
     }
 
-    private function getTestCart($skuArray = ['100331']) : \Wakup\Cart
+    private function getTestCart($skuArray = ['145326']) : \Wakup\Cart
     {
         $products = [];
         foreach ($skuArray as $sku) {

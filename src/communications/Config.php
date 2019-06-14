@@ -9,6 +9,8 @@
 namespace Wakup;
 
 
+use Monolog\Logger;
+
 class Config
 {
     var $azureLoginUrl, $azureLoginClientId,
@@ -26,14 +28,20 @@ class Config
     var $mongeOauthConfig;
 
     /**
+     * @var Logger
+     */
+    var $logger;
+
+    /**
      * Config constructor.
-     * @param $wakupEndpoint
-     * @param $wakupApiToken
-     * @param $wakupCompanyId
-     * @param $mongeEndpoint
-     * @param $mongeCountryCode
-     * @param $mongeShopCode
-     * @param $mongeWarehouseCode
+     * @param $logger Logger
+     * @param $wakupEndpoint string Endpoint for requests to Wakup API
+     * @param $wakupApiToken string API Token for requests to Wakup API
+     * @param $wakupCompanyId int Wakup company identifier
+     * @param $mongeEndpoint string Endpoint for requests to Monge API
+     * @param $mongeCountryCode string ISO Country code for Monge API requests
+     * @param $mongeShopCode int Shop code identifier for monge API requests
+     * @param $mongeWarehouseCode string Warehouse identifier for
      * @param $mongeChannelCode
      * @param $mongeCurrencyId
      * @param OauthConfig $azureOauthConfig
@@ -41,12 +49,13 @@ class Config
      * @param string $azureLoginUrl
      * @param string $azureLoginClientId
      */
-    public function __construct(string $wakupEndpoint, string $wakupApiToken, int $wakupCompanyId,
+    public function __construct(Logger $logger, string $wakupEndpoint, string $wakupApiToken, int $wakupCompanyId,
                                 $mongeEndpoint, $mongeCountryCode, $mongeShopCode, $mongeWarehouseCode,
                                 $mongeChannelCode, $mongeCurrencyId,
                                 OauthConfig $mongeOauthConfig, OauthConfig $azureOauthConfig,
                                 string $azureLoginUrl, string $azureLoginClientId)
     {
+        $this->logger = $logger;
         $this->wakupEndpoint = $wakupEndpoint;
         $this->wakupApiToken = $wakupApiToken;
         $this->wakupCompanyId = $wakupCompanyId;

@@ -10,16 +10,10 @@ declare(strict_types=1);
 
 // Autoload files using the Composer autoloader.
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/ParentRequestsTest.php';
 
-use PHPUnit\Framework\TestCase;
-
-final class WakupRequestsTest extends TestCase
+final class WakupRequestsTest extends ParentRequestsTest
 {
-
-    private static function getClient() : \Wakup\Client
-    {
-        return new Wakup\Client();
-    }
 
     public function testGetWakupPaginatedAttributesValue() : void
     {
@@ -53,7 +47,7 @@ final class WakupRequestsTest extends TestCase
 
     public function testGetWakupPaginatedProductsValue() : void
     {
-        $lastUpdate = new DateTime(date('Y-m-d H:i:s', strtotime('-1 hour')));
+        $lastUpdate = new DateTime(date('Y-m-d H:i:s', strtotime('-1 day')));
         $pagination = static::getClient()->getPaginatedProducts($lastUpdate, 0, 100);
         $this->assertInstanceOf(\Wakup\PaginatedProducts::class, $pagination);
         foreach ($pagination->getProducts() as $product) {

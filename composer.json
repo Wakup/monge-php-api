@@ -15,7 +15,8 @@
         "guzzlehttp/guzzle": "6.3.3",
         "ext-json": "*",
         "netresearch/jsonmapper": "v1.4.0",
-        "kamermans/guzzle-oauth2-subscriber": "v1.0.6"
+        "kamermans/guzzle-oauth2-subscriber": "v1.0.6",
+        "monolog/monolog": "v1.24.0"
     },
     "autoload": {
         "psr-4": {

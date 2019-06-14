@@ -10,7 +10,11 @@ namespace Wakup\Requests;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ServerException;
+use Monolog\Logger;
 use Wakup\Config;
 use Wakup\WakupException;
 
@@ -110,6 +114,8 @@ abstract class JsonRequest implements Request
     function launch()
     {
         try {
+            $this->logger()->debug("### Launching request: {$this->getUrl()}");
+            $this->logger()->debug("INPUT: {$this->getBodyContent()}");
             $response = $this->client->request(
                 $this->getMethod(),
                 $this->getUrl(),
@@ -118,11 +124,20 @@ abstract class JsonRequest implements Request
                     'body' => $this->getBodyContent(),
                     'headers' => $this->getHeaders()
                 ]);
+            $this->logger()->debug("OUTPUT: {$response->getBody()}");
             $obj = json_decode($response->getBody());
             return $this->onResponseProcess($obj);
         } catch (\JsonMapper_Exception $e) {
+            $this->logger()->error($e->getMessage());
             return $this->onRequestException($e);
         } catch (GuzzleException $e) {
+            $this->logger()->error("ERROR ON REQUEST: {$this->getUrl()}");
+            $this->logger()->error("INPUT: {$this->getBodyContent()}");
+            if ($e instanceof RequestException) {
+                $response = $e->getResponse();
+                $this->logger()->error("OUTPUT: {$response->getBody()}");
+            }
+            $this->logger()->error('Error message: ' . $e->getMessage());
             return $this->onRequestException($e);
         }
     }
@@ -134,6 +149,14 @@ abstract class JsonRequest implements Request
     function onRequestException(\Exception $e)
     {
         throw new WakupException($e);
+    }
+
+    /**
+     * @return Logger Current logger from confir
+     */
+    function logger() : Logger
+    {
+        return $this->config->logger;
     }
 
     /**

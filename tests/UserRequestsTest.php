@@ -10,20 +10,14 @@ declare(strict_types=1);
 
 // Autoload files using the Composer autoloader.
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/ParentRequestsTest.php';
 
-use PHPUnit\Framework\TestCase;
-
-final class UserRequestsTest extends TestCase
+final class UserRequestsTest extends ParentRequestsTest
 {
     const TEST_LOGIN_EMAIL = 'testcasesUser@gmail.com';
     const TEST_LOGIN_NEW_EMAIL = 'secondTestCase@gmail.com';
     const TEST_LOGIN_PASSWORD = 'P@ssword!';
     const TEST_LOGIN_NEW_PASSWORD = 'NewP@ssword!';
-
-    private static function getClient() : \Wakup\Client
-    {
-        return new Wakup\Client();
-    }
 
     public function testRegisterUser() : void
     {

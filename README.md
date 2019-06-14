@@ -10,10 +10,21 @@ El proyecto está desplegada en _packagist_ como una librería de composer. Para
     
 ## Uso básico
 
-Para acceder al cliente, basta con crear una instancia, que se puede reutilizar para el resto de peticiones:
+Para acceder al cliente, basta con crear una instancia, que se puede reutilizar para el resto de peticiones. A esta instancia se le debe incluir el [logger de monolog](https://github.com/Seldaek/monolog) a utilizar para el registro de las peticiones:
 
 ```php
-$wakupClient = new \Wakup\Client();
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+# Select path for log file
+$logDir = getcwd().'/my_app.log';
+
+# Create monolog logger
+$logger = new Logger('HTTP');
+$logger->pushHandler(new StreamHandler($logDir, Logger::ERROR));
+
+# Instance client
+$wakupClient = new \Wakup\Client($logger);
 ```
 Los métodos de la líbrería tienen tipado fuerte, lo que facilita su uso.
 

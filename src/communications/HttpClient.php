@@ -15,6 +15,9 @@ use kamermans\OAuth2\GrantType\ClientCredentials;
 use kamermans\OAuth2\OAuth2Middleware;
 use GuzzleHttp\HandlerStack;
 use kamermans\OAuth2\Signer\AccessToken\BearerAuth;
+use Monolog\Handler\FirePHPHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Wakup\Requests\Request;
 
 class HttpClient
@@ -41,20 +44,27 @@ class HttpClient
     var $config;
 
     /**
-     * Client constructor.
+     * @var Logger
      */
-    public function __construct()
+    var $logger;
+
+    /**
+     * Client constructor.
+     *
+     * @param $logger Logger Monolog setup for HTTP client logger
+     */
+    public function __construct(Logger $logger)
     {
-        $this->config = $this->getConfig();
+        $this->config = $this->getConfig($logger);
         $this->defaultClient = new \GuzzleHttp\Client();
         $this->mongeClient =  $this->getOauthClient($this->config->mongeOauthConfig);
         $this->azureClient =  $this->getOauthClient($this->config->azureOauthConfig);
     }
 
-    private function getConfig() : Config
+    private function getConfig(Logger $logger) : Config
     {
-        // TODO take config as parameter
         return new Config(
+            $logger,
             'http://ecommerce.wakup.net:9000/',
             'e85c7c92-38dc-4263-9322-aadc07ba846d',
             335,
