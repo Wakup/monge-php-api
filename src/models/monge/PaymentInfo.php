@@ -16,24 +16,30 @@ class PaymentInfo
     private const PAYMENT_METHOD_CREDIT_CARD = 'TAR.TV';
     private const PAYMENT_METHOD_FLEXIPAGO = 'FLE';
 
-    private $id, $financialPromotion, $financialScenario, $userCreditInfo;
+    private $id, $financialPromotion, $financialScenario, $userCreditInfo, $voucherNumber, $authMessage;
 
     /**
      * Private constructor
-     * @param $id
-     * @param $financialPromotion
-     * @param $financialScenario
-     * @param $creditInfo
+     * @param $id string External identifier for the payment method selected by user
+     * @param $financialPromotion FinancialPromotion|null Financial promotion selected by user
+     * @param $financialScenario FinancialScenario|null Financial scenario selected by user
+     * @param $creditInfo UserCreditInfo User info from Monge credit system
+     * @param $voucherNumber string Receipt number for credit card payment
+     * @param $authMessage string Authorization message obtained from credit card payment
      */
     private function __construct(string $id,
-                                ?FinancialPromotion $financialPromotion = null,
-                                ?FinancialScenario $financialScenario = null,
-                                ?UserCreditInfo $creditInfo = null)
+                                 ?FinancialPromotion $financialPromotion = null,
+                                 ?FinancialScenario $financialScenario = null,
+                                 ?UserCreditInfo $creditInfo = null,
+                                 ?string $voucherNumber = null,
+                                 ?string $authMessage = null)
     {
         $this->id = $id;
         $this->financialPromotion = $financialPromotion;
         $this->financialScenario = $financialScenario;
         $this->userCreditInfo = $creditInfo;
+        $this->voucherNumber = $voucherNumber;
+        $this->authMessage = $authMessage;
     }
 
     /**
@@ -47,11 +53,15 @@ class PaymentInfo
 
     /**
      * Creates a wrapper object with the payment information for Credit Card method
+     * @param $voucherNumber string Receipt number for credit card payment
+     * @param $authMessage string Authorization message obtained from credit card payment
      * @return PaymentInfo Payment information for Credit Card
      */
-    public static function creditCard() : PaymentInfo
+    public static function creditCard(string $voucherNumber, string $authMessage) : PaymentInfo
     {
-        return new self(self::PAYMENT_METHOD_CREDIT_CARD);
+        return new self(self::PAYMENT_METHOD_CREDIT_CARD,
+            null, null, null,
+            $voucherNumber, $authMessage);
     }
 
     /**
@@ -106,6 +116,22 @@ class PaymentInfo
     public function getAccountId() : ?string
     {
         return is_null($this->userCreditInfo) ? null : $this->userCreditInfo->getAccountId();
+    }
+
+    /**
+     * @return string|null Receipt number for credit card payment
+     */
+    public function getVoucherNumber(): ?string
+    {
+        return $this->voucherNumber;
+    }
+
+    /**
+     * @return string|null Authorization message obtained from credit card payment
+     */
+    public function getAuthMessage(): ?string
+    {
+        return $this->authMessage;
     }
 
 }

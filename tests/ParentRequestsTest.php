@@ -14,7 +14,7 @@ class ParentRequestsTest extends TestCase {
     {
         $logger = new Logger('TEST');
         // Now add some handlers
-        $logger->pushHandler(new StreamHandler(getcwd().'/my_app.log', Logger::ERROR));
+        $logger->pushHandler(new StreamHandler(getcwd().'/my_app.log', Logger::DEBUG));
         return new Wakup\Client($logger);
     }
 

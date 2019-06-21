@@ -154,7 +154,7 @@ final class MongeRequestsTest extends ParentRequestsTest
 
     public function testProcessCreditCardOrder() : void
     {
-        $paymentInfo = \Wakup\PaymentInfo::creditCard();
+        $paymentInfo = \Wakup\PaymentInfo::creditCard('1200540043', '01452841');
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $this->getTestUser(),
@@ -199,7 +199,7 @@ final class MongeRequestsTest extends ParentRequestsTest
         $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
         $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
 
-        $paymentInfo = \Wakup\PaymentInfo::creditCard();
+        $paymentInfo = \Wakup\PaymentInfo::creditCard('1200540043', '01452841');
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $user,
@@ -246,7 +246,7 @@ final class MongeRequestsTest extends ParentRequestsTest
         $reservationId = static::getClient()->reserveOrderStock($orderType,  $store, $cart);
         $reservationResult = static::getClient()->confirmOrderStockReservation($orderType, $reservationId, $cart);
 
-        $paymentInfo = \Wakup\PaymentInfo::creditCard();
+        $paymentInfo = \Wakup\PaymentInfo::creditCard('1200540043', '01452841');
         $result = static::getClient()->processOrder(
             new \Wakup\Order(
                 $user,

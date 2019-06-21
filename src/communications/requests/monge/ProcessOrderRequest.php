@@ -115,6 +115,8 @@ class ProcessOrderRequest extends MongeRequest
             'CodigoMoneda' => $config->mongeCurrencyId,
             'FechaProceso' => date('c'),
             'FormaPago' => $order->getPaymentInfo()->getId(),
+            'MensajeAutorizador' => $order->getPaymentInfo()->getAuthMessage(),
+            'NumeroVoucher' => $order->getPaymentInfo()->getVoucherNumber(),
             'NumeroOrden' => $order->getOrderNumber(),
             'MontoCompra' => $cart->getProductsPriceWithoutTax(),
             'Impuesto' => $cart->getProductsTaxAmount(),
