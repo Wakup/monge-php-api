@@ -37,7 +37,7 @@ class ProcessOrderRequest extends MongeRequest
                 'Bodega' => $store->getWarehouseId(),
                 'Sku' => $product->getSku(),
                 'Cantidad' => $product->getCount(),
-                'PrecioUnitario' => $product->getPrice(),
+                'PrecioUnitario' => $product->getPriceWithoutTax(),
                 'TasaImpuesto' => $product->getTaxRate(),
                 'Impuesto' => $product->getTaxAmount(),
                 'Subtotal' => $product->getTotalPriceWithoutTax(),
