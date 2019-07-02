@@ -49,6 +49,12 @@ final class MongeRequestsTest extends ParentRequestsTest
         }
     }
 
+    public function testGeneraDocumentos() : void
+    {
+        $results = static::getClient()->generaDocumentos('7826C298-059D-4D01-8222-FFFF0D2D087F');
+        $this->assertIsArray($results);
+    }
+
     public function testGetUserFinancialPromotions() : void
     {
         $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");

@@ -340,6 +340,17 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    public function generaDocumentos(string $requestNumber)
+    {
+        $params = [
+            'NumeroSolicitud' => $requestNumber,
+            'LlaveSistema' => 'TVCRI'
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Solicitud/GeneraDocumentos', 99, $params);
+        return $request->launch();
+    }
+
     /**
      * Obtains the financial scenarios for a given promotion and cart
      *
