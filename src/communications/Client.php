@@ -351,6 +351,36 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    public function EnviarToken(string $medioEnvio, string $descripcionMedioEnvio, int $tipoIdentificacion, string $identificacion, $otp):array
+    {
+        $params = [
+            'LlaveSistema' => 'TVCRI',
+            "medioEnvio"  => $medioEnvio,
+            "descripcionMedioEnvio"  => $descripcionMedioEnvio,
+            "tipoIdentificacion"  => $tipoIdentificacion,
+            "identificacion"  => $identificacion,
+            "otp"  => $otp
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Token/EnviarToken', 94, $params);
+        return $request->launch();
+    }
+
+
+    public function ValidarToken(int $tipoIdentificacion, string $identificacion, $otp)
+    {
+        $params = [
+            'LlaveSistema' => 'TVCRI',
+            "tipoIdentificacion"  => $tipoIdentificacion,
+            "identificacion"  => $identificacion,
+            "otp"  => $otp
+
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Token/ValidarToken', 94, $params);
+        return $request->launch();
+    }
+
     /**
      * Obtains the financial scenarios for a given promotion and cart
      *

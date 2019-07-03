@@ -55,6 +55,18 @@ final class MongeRequestsTest extends ParentRequestsTest
         $this->assertIsArray($results);
     }
 
+    public function testEnviarToken() : void
+    {
+        $results = static::getClient()->EnviarToken( "Email","UsuarioTV@grupomonge.com", 0, "00-1234-0121", 0);
+        $this->assertIsArray($results);
+    }
+
+    public function testValidarToken() : void
+    {
+        $results = static::getClient()->ValidarToken( 0,"00-1234-0121", "");
+        $this->assertIsArray($results);
+    }
+
     public function testGetUserFinancialPromotions() : void
     {
         $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
