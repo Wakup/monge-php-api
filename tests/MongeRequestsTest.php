@@ -67,6 +67,30 @@ final class MongeRequestsTest extends ParentRequestsTest
         $this->assertIsArray($results);
     }
 
+    public function testPreAutorizacion() : void
+    {
+        $results = static::getClient()->PreAutorizacion( 188,
+         830.0,
+         260,
+         66459,
+         0,
+         415688,
+         1,
+         10001,
+         "C002",
+         20000.0,
+         "1",
+         3,
+            "1234445",
+         "23455",
+         0.0,
+         0.0,
+         "CLIENTE_ECOMMERCE"
+        );
+
+        $this->assertIsArray($results);
+    }
+
     public function testGetUserFinancialPromotions() : void
     {
         $clientInfo = static::getClient()->getUserCreditInfo("06-0363-0273");
