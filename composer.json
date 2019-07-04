@@ -1,5 +1,39 @@
 {
+    "name": "wakup/monge-php-api",
+    "description": "PHP interface for Monge web services",
+    "version": "0.6.3",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alex Gutiérrez",
+            "email": "alejandro.gutierrez@wakup.net"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
-        "wakup/monge-php-api": "^0.6.1"
+        "php": ">=7.1.0",
+        "guzzlehttp/guzzle": "6.3.3",
+        "ext-json": "*",
+        "netresearch/jsonmapper": "v1.4.0",
+        "kamermans/guzzle-oauth2-subscriber": "v1.0.6",
+        "monolog/monolog": "v1.24.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wakup\\": ["src/",
+                "src/models/monge/",
+                "src/models/wakup/",
+                "src/models/azure/",
+                "src/communications/"],
+            "Wakup\\Requests\\": [
+                "src/communications/requests",
+                "src/communications/requests/wakup",
+                "src/communications/requests/monge",
+                "src/communications/requests/azure"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
     }
 }
