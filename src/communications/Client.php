@@ -351,6 +351,83 @@ class Client extends HttpClient
         return $request->launch();
     }
 
+    public function EnviarToken(string $medioEnvio, string $descripcionMedioEnvio, int $tipoIdentificacion, string $identificacion, $otp):array
+    {
+        $params = [
+            'LlaveSistema' => 'TVCRI',
+            "medioEnvio"  => $medioEnvio,
+            "descripcionMedioEnvio"  => $descripcionMedioEnvio,
+            "tipoIdentificacion"  => $tipoIdentificacion,
+            "identificacion"  => $identificacion,
+            "otp"  => $otp
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Token/EnviarToken', 94, $params);
+        return $request->launch();
+    }
+
+
+    public function ValidarToken(int $tipoIdentificacion, string $identificacion, $otp)
+    {
+        $params = [
+            'LlaveSistema' => 'TVCRI',
+            "tipoIdentificacion"  => $tipoIdentificacion,
+            "identificacion"  => $identificacion,
+            "otp"  => $otp
+
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Token/ValidarToken', 94, $params);
+        return $request->launch();
+    }
+
+    public function PreAutorizacion(
+            string $CodigoMoneda,
+            decimal $CuotaPactada,
+            int $IdCanalVenta,
+            long $IdCuenta,
+            int $IdF_crddPlazosInformativos,
+            long $IdPersona,
+            int $IdPromocion,
+            long $IdSegmento,
+            string $Tienda,
+            decimal $MontoFinanciado,
+            string $NumeroOrden,
+            int $Plazo,
+            string $Sku,
+            string $PrecioProducto,
+            decimal $Prima,
+            decimal $TasaInteresNormal,
+            string $UsuarioCreacion)
+
+
+
+    {
+        $params = [
+            "CodigoMoneda" => $CodigoMoneda,
+            "CuotaPactada" => $CuotaPactada,
+            "IdCanalVenta" => $IdCanalVenta,
+            "IdCuenta" => $IdCuenta,
+            "IdF_crddPlazosInformativos" => $IdF_crddPlazosInformativos,
+            "IdPersona" => $IdPersona,
+            "IdPromocion" => $IdPromocion,
+            "IdSegmento" => $IdSegmento,
+            "Tienda" => $Tienda,
+            "MontoFinanciado" => $MontoFinanciado,
+            "NumeroOrden" => $NumeroOrden,
+            "Plazo" => $Plazo,
+            "PrecioProducto" => $PrecioProducto,
+            "Prima" => $Prima,
+            "Sku" => $Sku,
+            "TasaInteresNormal" => $TasaInteresNormal,
+            "UsuarioCreacion" => $UsuarioCreacion
+
+        ];
+        $request = new MongeRequest($this->config, $this->mongeClient, null,
+            'Cotizacion/PreAutorizacion', 98, $params);
+        return $request->launch();
+    }
+
     /**
      * Obtains the financial scenarios for a given promotion and cart
      *
